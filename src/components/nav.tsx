@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation'
 import navLinks from '../constants/navLinks'
 import Link from 'next/link'
+import { cn } from '@/utils'
 
 const NavItem = ({ title, link }: { title: string; link: string }) => {
   const pathname = usePathname()
@@ -10,9 +11,10 @@ const NavItem = ({ title, link }: { title: string; link: string }) => {
     <Link
       href={link}
       key={title}
-      className={`mx-1 transition-colors font-medium ${
+      className={cn(
+        `mx-1 transition-colors font-medium hover:text-gray-900/80`,
         pathname.startsWith(link) ? 'text-gray-900' : 'text-gray-900/60'
-      } hover:text-gray-900/80`}
+      )}
     >
       <span className={`px-1 py-2`}>{title}</span>
     </Link>
