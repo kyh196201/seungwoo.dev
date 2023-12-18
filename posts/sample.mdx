@@ -1,0 +1,22 @@
+---
+title: mdx sample
+date: 2023-12-18
+description: 글 예시
+---
+ 
+## 제목
+ 
+- 내용 1
+
+<mark>하이라이트</mark>
+
+## 코드 블록
+
+```typescript
+import clsx, { type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+ 
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
