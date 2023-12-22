@@ -1,0 +1,72 @@
+/* headings */
+.prose h2,
+.prose h3,
+.prose h4 {
+	@apply font-medium;
+}
+
+.prose h2 {
+	@apply text-2xl;
+}
+
+.prose h3 {
+	@apply text-xl;
+}
+
+.prose hr {
+	@apply mb-6;
+}
+
+/* mark */
+.prose mark {
+	@apply bg-sky-100 font-medium py-[3px] px-[5px] rounded-sm;
+}
+
+/* #region code block */
+.prose pre {
+	@apply border border-solid border-slate-200 p-0;
+}
+
+.prose div[data-rehype-pretty-code-title] {
+	@apply bg-slate-200 font-semibold px-4 py-3 rounded-tl-md rounded-tr-md;
+}
+
+.prose div[data-rehype-pretty-code-title] + pre {
+	@apply mt-0 border-t-0 rounded-tl-none rounded-tr-none;
+}
+
+.prose pre code {
+	@apply grid py-3;
+	counter-reset: line;
+}
+
+.prose pre code > span {
+	@apply px-3;
+}
+
+.prose pre code > span[data-highlighted-line] {
+	background-color: var(--code-block-highlighted-line-bg-color);
+}
+
+/* #region line numbers */
+.prose pre code > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+ 
+  /* Other styling */
+  display: inline-block;
+  width: 1rem;
+  margin-right: 2rem;
+  text-align: right;
+  color: var(--code-block-line-number-color);
+}
+ 
+.prose pre code[data-line-numbers-max-digits='2'] > [data-line]::before {
+  width: 2rem;
+}
+ 
+.prose pre code[data-line-numbers-max-digits='3'] > [data-line]::before {
+  width: 3rem;
+}
+/* #endregion */
+/* #endregion */

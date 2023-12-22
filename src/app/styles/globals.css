@@ -3,15 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --text-color: rgb(0, 0, 0);
+
+  /* mdx */
+  --code-block-line-number-color: rgb(107, 114, 128);
+  --code-block-highlighted-line-bg-color: #383A420C;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* --foreground-rgb: 255, 255, 255; */
+    /* --text-color: 255, 255, 255; */
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  color: var(--text-color);
 }

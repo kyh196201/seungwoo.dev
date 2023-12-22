@@ -1,4 +1,5 @@
 // import { Metadata } from 'next'
+import '@/app/styles/prose.css'
 import { allPosts } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
 interface Params {

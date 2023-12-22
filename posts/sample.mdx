@@ -4,15 +4,49 @@ date: 2023-12-18
 description: 글 예시
 ---
  
-## 제목
+## h2 제목
+
+### h3 제목
+
+---
+
+## 기본 요소
+
+목록
  
 - 내용 1
+  - 하위 내용 1
+- 내용 2
+
+순서 목록
+
+1. 내용 1
+2. 내용 2
 
 <mark>하이라이트</mark>
 
+---
+
 ## 코드 블록
 
-```typescript
+인라인 코드 블록
+
+`inline code` `inline code`
+
+기본 코드 블록
+
+```typescript {1-2}
+import clsx, { type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
+ 
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+```
+
+제목이 있는 코드 블록
+
+```typescript title="제목이 있는 코드 블록 결과"
 import clsx, { type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
  
