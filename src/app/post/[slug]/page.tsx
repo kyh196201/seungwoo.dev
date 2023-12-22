@@ -15,7 +15,11 @@ const Page: React.FC<Params> = ({ params: { slug } }) => {
     <div>
       <h1>{post?.title}</h1>
       <p>{post?.description}</p>
-      <MDXComponent />
+
+      {/* mdx */}
+      <article className={`prose`}>
+        <MDXComponent />
+      </article>
     </div>
   )
 }
