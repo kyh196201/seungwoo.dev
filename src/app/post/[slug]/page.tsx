@@ -2,15 +2,29 @@
 import '@/app/styles/prose.css'
 import { allPosts } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
+import { notFound } from 'next/navigation'
 interface Params {
   params: {
     slug: string
   }
 }
 
+const Markdown: React.FC<{ body: string }> = ({ body }) => {
+  const MDXComponent = useMDXComponent(body)
+
+  return (
+    <article className={`prose`}>
+      <MDXComponent />
+    </article>
+  )
+}
+
 const Page: React.FC<Params> = ({ params: { slug } }) => {
   const post = allPosts.find((p) => p.slug === slug)
-  const MDXComponent = useMDXComponent(post.body.code)
+
+  if (!post) {
+    return notFound()
+  }
 
   return (
     <div>
@@ -18,9 +32,7 @@ const Page: React.FC<Params> = ({ params: { slug } }) => {
       <p>{post?.description}</p>
 
       {/* mdx */}
-      <article className={`prose`}>
-        <MDXComponent />
-      </article>
+      <Markdown body={post.body.code} />
     </div>
   )
 }
