@@ -1,5 +1,7 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import remarkGfm from 'remark-gfm'
+import rehypePrettyCode, { type Options as RehypePrettyCodeOptions } from 'rehype-pretty-code'
+import { readFileSync } from 'fs'
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -18,11 +20,17 @@ export const Post = defineDocumentType(() => ({
   },
 }))
 
+const rehypeOptions: RehypePrettyCodeOptions = {
+  theme: JSON.parse(readFileSync('./code_themes/atom-one-light.json', 'utf-8')),
+  grid: true,
+  keepBackground: true,
+}
+
 export default makeSource({
   contentDirPath: 'posts',
   documentTypes: [Post],
   mdx: {
-    rehypePlugins: [remarkGfm],
-    remarkPlugins: [],
+    rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
+    remarkPlugins: [remarkGfm],
   },
 })
