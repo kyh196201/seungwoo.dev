@@ -35,6 +35,13 @@
 	@apply mt-0 border-t-0 rounded-tl-none rounded-tr-none;
 }
 
+/* inline code block */
+.prose code:not(pre code) {
+	background: var(--code-block-inline-code-bg-color);
+	color: var(--code-block-inline-code-color);
+	@apply font-semibold py-[3px] px-[5px] rounded-sm;
+}
+
 .prose pre code {
 	@apply grid py-3;
 	counter-reset: line;
