@@ -1,6 +1,9 @@
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import remarkGfm from 'remark-gfm'
 import rehypePrettyCode, { type Options as RehypePrettyCodeOptions } from 'rehype-pretty-code'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings, { Options as RehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings'
+import rehypeExternalLinks, { Options as RehypeExternalLinksOptions } from 'rehype-external-links'
 import { readFileSync } from 'fs'
 
 export const Post = defineDocumentType(() => ({
@@ -20,17 +23,38 @@ export const Post = defineDocumentType(() => ({
   },
 }))
 
-const rehypeOptions: RehypePrettyCodeOptions = {
+const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
   theme: JSON.parse(readFileSync('./code_themes/atom-one-light.json', 'utf-8')),
   grid: true,
   keepBackground: true,
+}
+
+const rehypeAutolinkHeadingsOptions: RehypeAutolinkHeadingsOptions = {
+  behavior: 'wrap', // https://github.com/rehypejs/rehype-autolink-headings?tab=readme-ov-file#behavior
+  properties: {
+    className: ['anchor'],
+    ariaLabel: 'anchor',
+  },
+}
+
+const rehypeExternalLinksOptions: RehypeExternalLinksOptions = {
+  rel: ['noopener', 'noreferrer'],
+  target: '_blank',
+  properties: {
+    className: ['external-link'],
+  },
 }
 
 export default makeSource({
   contentDirPath: 'posts',
   documentTypes: [Post],
   mdx: {
-    rehypePlugins: [[rehypePrettyCode, rehypeOptions]],
+    rehypePlugins: [
+      rehypeSlug,
+      [rehypeAutolinkHeadings, rehypeAutolinkHeadingsOptions],
+      [rehypeExternalLinks, rehypeExternalLinksOptions],
+      [rehypePrettyCode, rehypePrettyCodeOptions],
+    ],
     remarkPlugins: [remarkGfm],
   },
 })
