@@ -5,6 +5,7 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings, { Options as RehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings'
 import rehypeExternalLinks, { Options as RehypeExternalLinksOptions } from 'rehype-external-links'
 import { readFileSync } from 'fs'
+import { preProcess, postProcess } from './src/utils/rehype-pre-raw'
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -50,10 +51,12 @@ export default makeSource({
   documentTypes: [Post],
   mdx: {
     rehypePlugins: [
+      preProcess,
       rehypeSlug,
       [rehypeAutolinkHeadings, rehypeAutolinkHeadingsOptions],
       [rehypeExternalLinks, rehypeExternalLinksOptions],
       [rehypePrettyCode, rehypePrettyCodeOptions],
+      postProcess,
     ],
     remarkPlugins: [remarkGfm],
   },

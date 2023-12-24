@@ -1,4 +1,5 @@
 // import { Metadata } from 'next'
+import Pre from '@/app/post/[slug]/components/pre'
 import '@/app/styles/prose.css'
 import { allPosts } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
@@ -12,9 +13,13 @@ interface Params {
 const Markdown: React.FC<{ body: string }> = ({ body }) => {
   const MDXComponent = useMDXComponent(body)
 
+  const mdxComponents = {
+    pre: Pre,
+  }
+
   return (
     <article className={`prose`}>
-      <MDXComponent />
+      <MDXComponent components={mdxComponents} />
     </article>
   )
 }
