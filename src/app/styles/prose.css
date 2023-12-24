@@ -70,6 +70,18 @@
 	@apply bg-sky-100 font-medium py-[3px] px-[5px] rounded-sm;
 }
 
+/* #region img */
+.prose img {
+	@apply m-0;
+}
+
+/* img caption */
+.prose img + em {
+	@apply block mt-1 text-center not-italic;
+}
+/* #endregion */
+
+
 /* #region code block */
 .prose pre {
 	@apply border border-solid border-slate-200 p-0;
