@@ -1,11 +1,13 @@
 // import { Metadata } from 'next'
 import Pre from '@/app/post/[slug]/components/pre'
 import '@/app/styles/prose.css'
+import createMetadata from '@/utils/metadata'
 import { Post, allPosts } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
-interface Params {
+
+interface Props {
   params: {
     slug: string
   }
@@ -48,8 +50,27 @@ const BlogPost: React.FC<{ post: Post }> = ({ post }) => {
   )
 }
 
-const Page: React.FC<Params> = ({ params: { slug } }) => {
-  const post = allPosts.find((p) => p.slug === slug)
+const findPost = (slug: string): Post | undefined => allPosts.find((p) => p.slug === slug)
+
+export async function generateMetadata({ params }: Props) {
+  const { slug } = params
+  const post = findPost(slug)
+
+  if (!post) {
+    return {}
+  }
+
+  const { title, description } = post
+
+  return createMetadata({
+    title,
+    description,
+    path: `/posts/${slug}`,
+  })
+}
+
+const Page: React.FC<Props> = ({ params: { slug } }) => {
+  const post = findPost(slug)
 
   if (!post) {
     return notFound()
