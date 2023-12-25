@@ -1,10 +1,11 @@
 import { Metadata } from 'next'
 import { allPosts } from 'contentlayer/generated'
 import Link from 'next/link'
+import { DEFAULT_METADATA } from '@/utils/metadata'
 
 export const metadata: Metadata = {
-  title: 'Post',
-  description: 'Post Page',
+  ...DEFAULT_METADATA,
+  description: '',
 }
 
 export default function Posts() {

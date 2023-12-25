@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
+import { DEFAULT_METADATA } from '@/utils/metadata'
 
 export const metadata: Metadata = {
-  title: 'Home',
-  description: 'Home Page',
+  ...DEFAULT_METADATA,
 }
 
 export default function Home() {

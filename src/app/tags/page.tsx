@@ -1,8 +1,9 @@
 import { Metadata } from 'next'
+import { DEFAULT_METADATA } from '@/utils/metadata'
 
 export const metadata: Metadata = {
-  title: 'Tags',
-  description: 'Tags Page',
+  ...DEFAULT_METADATA,
+  description: '',
 }
 
 export default function Tags() {
