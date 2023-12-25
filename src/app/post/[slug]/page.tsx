@@ -7,13 +7,13 @@ import { useMDXComponent } from 'next-contentlayer/hooks'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-interface Props {
+type Props = {
   params: {
     slug: string
   }
 }
 
-const Markdown: React.FC<{ body: string }> = ({ body }) => {
+const Markdown = ({ body }: { body: string }) => {
   const MDXComponent = useMDXComponent(body)
 
   const mdxComponents = {
@@ -27,7 +27,7 @@ const Markdown: React.FC<{ body: string }> = ({ body }) => {
   )
 }
 
-const BlogPost: React.FC<{ post: Post }> = ({ post }) => {
+const BlogPost = ({ post }: { post: Post }) => {
   const { title, date, tags = [] } = post
 
   return (
@@ -69,7 +69,7 @@ export async function generateMetadata({ params }: Props) {
   })
 }
 
-const Page: React.FC<Props> = ({ params: { slug } }) => {
+export default function Page({ params: { slug } }: Props) {
   const post = findPost(slug)
 
   if (!post) {
@@ -78,5 +78,3 @@ const Page: React.FC<Props> = ({ params: { slug } }) => {
 
   return <BlogPost post={post} />
 }
-
-export default Page

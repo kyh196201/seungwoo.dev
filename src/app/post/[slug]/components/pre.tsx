@@ -5,7 +5,7 @@ interface Props extends React.HTMLAttributes<HTMLPreElement> {
   raw?: string
 }
 
-const Pre: React.FC<Props> = ({ children, raw, ...props }) => {
+const Pre = ({ children, raw, ...props }: Props) => {
   return (
     <pre
       className={`relative`}

@@ -3,7 +3,11 @@
 import { useCallback, useState } from 'react'
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons'
 
-const CopyButton: React.FC<{ code: string }> = ({ code }) => {
+type Props = {
+  code: string
+}
+
+const CopyButton = ({ code }: Props) => {
   const [isCopied, setIsCopied] = useState(false)
 
   const handleClick = useCallback(async () => {
