@@ -1,3 +1,7 @@
+.prose {
+	max-width: 100% !important;
+}
+
 /* #region headings */
 .prose h2,
 .prose h3,
