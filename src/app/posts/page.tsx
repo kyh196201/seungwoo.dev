@@ -15,7 +15,7 @@ export default function Posts() {
         {allPosts.map((post) => (
           <li key={post._id}>
             <Link
-              href={`/post/${post.slug}`}
+              href={`/posts/${post.slug}`}
               passHref
               className={`flex flex-col`}
             >

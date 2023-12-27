@@ -1,5 +1,4 @@
-// import { Metadata } from 'next'
-import Pre from '@/app/post/[slug]/components/pre'
+import Pre from './components/pre'
 import '@/app/styles/prose.css'
 import createMetadata from '@/utils/metadata'
 import { Post, allPosts } from 'contentlayer/generated'
