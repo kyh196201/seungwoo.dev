@@ -1,6 +1,8 @@
 import Pre from './components/pre'
 import '@/app/styles/prose.css'
+import { formatDate } from '@/utils/days'
 import createMetadata from '@/utils/metadata'
+import { getTimeAgo } from '@/utils/time-ago'
 import { Post, allPosts } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import Link from 'next/link'
@@ -12,40 +14,45 @@ type Props = {
   }
 }
 
-const Markdown = ({ body }: { body: string }) => {
-  const MDXComponent = useMDXComponent(body)
+const BlogPost = ({ post }: { post: Post }) => {
+  const { title, tags = [] } = post
+  const date = new Date(post.date)
+  const MDXComponent = useMDXComponent(post.body.code)
 
   const mdxComponents = {
     pre: Pre,
   }
 
   return (
-    <article className={`prose`}>
-      <MDXComponent components={mdxComponents} />
-    </article>
-  )
-}
+    <article>
+      <div className={`mb-8`}>
+        <h2 className={`text-3xl font-medium`}>{title}</h2>
 
-const BlogPost = ({ post }: { post: Post }) => {
-  const { title, date, tags = [] } = post
+        {/* date & time */}
+        <span className={`block mt-2 text-gray-600 font-medium`}>
+          {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
+        </span>
 
-  return (
-    <div>
-      <h2>{title}</h2>
-      <span>{date}</span>
-      {tags.length && (
-        <ul>
-          {tags.map((tag, index) => (
-            <li key={`${tag}${index}`}>
-              <Link href={`/tags/${tag}`}>{tag}</Link>
-            </li>
-          ))}
-        </ul>
-      )}
+        {/* tags */}
+        {tags.length && (
+          <ul className={`mt-4 flex`}>
+            {tags.map((tag, index) => (
+              <li
+                key={`${tag}${index}`}
+                className={`mr-2`}
+              >
+                <Link href={`/tags/${tag}`}>{tag}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
 
       {/* mdx */}
-      <Markdown body={post.body.code} />
-    </div>
+      <div className={`prose`}>
+        <MDXComponent components={mdxComponents} />
+      </div>
+    </article>
   )
 }
 
@@ -72,7 +79,7 @@ export default function Page({ params: { slug } }: Props) {
   const post = findPost(slug)
 
   if (!post) {
-    return notFound()
+    notFound()
   }
 
   return <BlogPost post={post} />
