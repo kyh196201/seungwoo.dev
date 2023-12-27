@@ -13,6 +13,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "contentlayer": "^0.3.4",
+    "dayjs": "^1.11.10",
+    "javascript-time-ago": "^2.5.9",
     "next": "14.0.4",
     "next-contentlayer": "^0.3.4",
     "react": "^18",
