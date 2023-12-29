@@ -3,10 +3,12 @@ import '@/app/styles/prose.css'
 import { formatDate } from '@/utils/days'
 import createMetadata from '@/utils/metadata'
 import { getTimeAgo } from '@/utils/time-ago'
-import { Post, allPosts } from 'contentlayer/generated'
+import { Post } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import PostLink from './components/post-link'
+import postsService from '@/api/posts'
 
 type Props = {
   params: {
@@ -17,6 +19,9 @@ type Props = {
 const BlogPost = ({ post }: { post: Post }) => {
   const { title, tags = [] } = post
   const date = new Date(post.date)
+
+  const { nextPost, prevPost } = postsService.findNextAndPrevPost(post)
+
   const MDXComponent = useMDXComponent(post.body.code)
 
   const mdxComponents = {
@@ -25,7 +30,7 @@ const BlogPost = ({ post }: { post: Post }) => {
 
   return (
     <article>
-      <div className={`mb-8`}>
+      <header className={`mb-8`}>
         <h2 className={`text-3xl font-medium`}>{title}</h2>
 
         {/* date & time */}
@@ -34,7 +39,7 @@ const BlogPost = ({ post }: { post: Post }) => {
         </span>
 
         {/* tags */}
-        {tags.length && (
+        {tags.length > 0 && (
           <ul className={`mt-4 flex`}>
             {tags.map((tag, index) => (
               <li
@@ -46,21 +51,30 @@ const BlogPost = ({ post }: { post: Post }) => {
             ))}
           </ul>
         )}
-      </div>
+      </header>
 
       {/* mdx */}
       <div className={`prose`}>
         <MDXComponent components={mdxComponents} />
       </div>
+
+      <footer className={`flex items-center justify-between gap-2 mt-12 py-4 px-2 border-t text-sm border-primary`}>
+        {prevPost && <PostLink post={prevPost} />}
+
+        {nextPost && (
+          <PostLink
+            isNext={true}
+            post={nextPost}
+          />
+        )}
+      </footer>
     </article>
   )
 }
 
-const findPost = (slug: string): Post | undefined => allPosts.find((p) => p.slug === slug)
-
 export async function generateMetadata({ params }: Props) {
   const { slug } = params
-  const post = findPost(slug)
+  const post = postsService.findPost(slug)
 
   if (!post) {
     return {}
@@ -76,7 +90,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default function Page({ params: { slug } }: Props) {
-  const post = findPost(slug)
+  const post = postsService.findPost(slug)
 
   if (!post) {
     notFound()

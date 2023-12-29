@@ -1,7 +1,8 @@
 import { Metadata } from 'next'
-import { allPosts } from 'contentlayer/generated'
 import Link from 'next/link'
 import { DEFAULT_METADATA } from '@/utils/metadata'
+import postsService from '@/api/posts'
+import { getPostPath } from '@/utils/paths'
 
 export const metadata: Metadata = {
   ...DEFAULT_METADATA,
@@ -9,13 +10,15 @@ export const metadata: Metadata = {
 }
 
 export default function Posts() {
+  const posts = postsService.getAllPostByDateDesc()
+
   return (
     <div>
       <ul>
-        {allPosts.map((post) => (
+        {posts.map((post) => (
           <li key={post._id}>
             <Link
-              href={`/posts/${post.slug}`}
+              href={getPostPath(post)}
               passHref
               className={`flex flex-col`}
             >
