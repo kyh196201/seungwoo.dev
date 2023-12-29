@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  *,
+  ::before,
+  ::after {
+    @apply border-primary;
+  }
+}
+
 :root {
   /* primary */
   /* https://yeun.github.io/open-color/#gray */

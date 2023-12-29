@@ -58,7 +58,7 @@ const BlogPost = ({ post }: { post: Post }) => {
         <MDXComponent components={mdxComponents} />
       </div>
 
-      <footer className={`flex items-center justify-between gap-2 mt-12 py-4 px-2 border-t text-sm border-primary`}>
+      <footer className={`flex items-center justify-between gap-2 mt-12 py-4 px-2 border-t text-sm `}>
         {prevPost && <PostLink post={prevPost} />}
 
         {nextPost && (
