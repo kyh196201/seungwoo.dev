@@ -42,7 +42,7 @@
 /* #endregion */
 
 .prose hr {
-	@apply mb-6;
+	@apply mb-6 border-primary;
 }
 
 /* #region link */
@@ -76,7 +76,7 @@
 
 /* #region img */
 .prose img {
-	@apply m-0;
+	@apply m-0 border border-primary rounded-md;
 }
 
 /* img caption */
@@ -88,7 +88,7 @@
 
 /* #region code block */
 .prose pre {
-	@apply border border-solid border-slate-200 p-0;
+	@apply border border-solid border-primary p-0;
 }
 
 .prose div[data-rehype-pretty-code-title] {

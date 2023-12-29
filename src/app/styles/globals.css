@@ -3,7 +3,10 @@
 @tailwind utilities;
 
 :root {
+  /* primary */
+  /* https://yeun.github.io/open-color/#gray */
   --text-color: rgb(0, 0, 0);
+  --border-color: #dee2e6; /* border-primary, gray-3 */
 
   /* mdx */
   --code-block-line-number-color: rgb(107, 114, 128);
@@ -20,4 +23,8 @@
 
 body {
   color: var(--text-color);
+}
+
+em {
+  font-style: normal;
 }

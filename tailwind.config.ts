@@ -7,7 +7,15 @@ const config: Config = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      borderColor: {
+        primary: '#dee2e6',
+      },
+
+      maxWidth: {
+        '1/2': '50%',
+      },
+    },
   },
   plugins: [require('@tailwindcss/typography')],
 }
