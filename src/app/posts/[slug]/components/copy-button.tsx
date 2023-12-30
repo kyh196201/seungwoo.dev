@@ -24,7 +24,7 @@ const CopyButton = ({ code }: Props) => {
   return (
     <button
       type="button"
-      className={`absolute w-8 h-8 flex items-center justify-center bottom-2 right-2 transition-colors text-black bg-transparent rounded-md hover:bg-gray-200`}
+      className={`absolute w-8 h-8 flex items-center justify-center bottom-2 right-2 transition-colors text-black bg-transparent rounded-md hover:bg-gray-200 focus:bg-gray-200`}
       onClick={handleClick}
     >
       {isCopied ? <CheckIcon /> : <CopyIcon />}

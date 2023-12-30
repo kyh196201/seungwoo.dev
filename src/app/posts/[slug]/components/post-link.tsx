@@ -17,7 +17,7 @@ const PostLink = ({ isNext = false, post }: Props) => {
     <Link
       href={path}
       className={cn(
-        `flex flex-col max-w-1/2 transition opacity-70 hover:opacity-100`,
+        `flex flex-col max-w-1/2 transition opacity-70 hover:opacity-100 focus:opacity-100`,
         isNext ? 'ml-auto items-end' : ''
       )}
     >
@@ -35,7 +35,9 @@ const PostLink = ({ isNext = false, post }: Props) => {
         )}
       </div>
 
-      <strong className={cn(`font-medium break-all`, isNext ? 'text-right' : '')}>{title}</strong>
+      <strong className={cn(`text-sm sm:text-base font-medium keep-all line-clamp-2`, isNext ? 'text-right' : '')}>
+        {title}
+      </strong>
     </Link>
   )
 }

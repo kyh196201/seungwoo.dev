@@ -36,7 +36,8 @@
 	transition: 0.25s;
 }
 
-.prose .anchor:hover::after {
+.prose .anchor:hover::after,
+.prose .anchor:focus::after {
 	opacity: 1;
 }
 /* #endregion */

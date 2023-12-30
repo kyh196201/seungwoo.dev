@@ -12,7 +12,7 @@ const NavItem = ({ title, link }: { title: string; link: string }) => {
       href={link}
       key={title}
       className={cn(
-        `mx-1 transition-colors font-medium hover:text-gray-900/80`,
+        `mx-1 transition-colors font-medium hover:text-gray-900/80 focus:text-gray-900/80`,
         pathname.startsWith(link) ? 'text-gray-900' : 'text-gray-900/60'
       )}
     >
