@@ -15,7 +15,7 @@ export default function Posts() {
 
   return (
     <>
-      <div className={`mb-12`}>
+      <div className={`mb-4`}>
         <h2 className={`text-3xl sm:text-4xl font-medium mb-2`}>글 목록</h2>
         <p className={`text-gray-600 font-medium`}>공유하고 싶고, 기록하고 싶은 내용을 위한 공간입니다.</p>
       </div>

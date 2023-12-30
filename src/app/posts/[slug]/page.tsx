@@ -30,13 +30,15 @@ const BlogPost = ({ post }: { post: Post }) => {
 
   return (
     <article>
-      <header className={`mb-8`}>
-        <h2 className={`text-3xl font-medium`}>{title}</h2>
+      <header className={`mb-4`}>
+        <h2 className={`text-3xl sm:text-4xl font-medium mb-2 break-keep`}>{title}</h2>
 
         {/* date & time */}
-        <span className={`block mt-2 text-gray-600 font-medium`}>
-          {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
-        </span>
+        <p className={`text-sm sm:text-base text-gray-600 font-medium`}>
+          <time>
+            {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
+          </time>
+        </p>
 
         {/* tags */}
         {tags.length > 0 && (
@@ -54,11 +56,11 @@ const BlogPost = ({ post }: { post: Post }) => {
       </header>
 
       {/* mdx */}
-      <div className={`prose`}>
+      <div className={`prose border-b border-t py-12`}>
         <MDXComponent components={mdxComponents} />
       </div>
 
-      <footer className={`flex items-center justify-between gap-2 mt-12 py-4 px-2 border-t text-sm `}>
+      <footer className={`flex items-center justify-between gap-2 mt-4 px-2 text-sm `}>
         {prevPost && <PostLink post={prevPost} />}
 
         {nextPost && (
