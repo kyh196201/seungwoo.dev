@@ -45,6 +45,10 @@
 	@apply mb-6 border-primary;
 }
 
+.prose hr:last-child {
+	display: none;
+}
+
 /* #region link */
 .prose a:not(.anchor) {
 	@apply transition ease-in-out opacity-80 hover:opacity-100;
