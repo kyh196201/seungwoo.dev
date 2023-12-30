@@ -13,7 +13,7 @@
 :root {
   /* primary */
   /* https://yeun.github.io/open-color/#gray */
-  --text-color: rgb(0, 0, 0);
+  --text-color: rgb(23, 23, 23);
   --border-color: #dee2e6; /* border-primary, gray-3 */
 
   /* mdx */
