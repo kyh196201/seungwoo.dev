@@ -23,7 +23,10 @@ export default function Posts() {
       <div className={`border-b border-t py-12`}>
         <ul className={`grid sm:grid-cols-2 gap-10 sm:gap-8`}>
           {posts.map((post) => (
-            <li key={post._id}>
+            <li
+              key={post._id}
+              className={`animate-fadeInUp`}
+            >
               <PostCard post={post} />
             </li>
           ))}

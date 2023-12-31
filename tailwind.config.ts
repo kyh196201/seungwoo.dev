@@ -8,6 +8,17 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      animation: {
+        fadeInUp: 'fadeInUp 0.35s linear',
+      },
+
+      keyframes: {
+        fadeInUp: {
+          '0%': { transform: 'translateY(10px)', opacity: '0' },
+          '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+      },
+
       borderColor: {
         primary: '#dee2e6',
       },
