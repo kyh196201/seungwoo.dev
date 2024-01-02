@@ -5,10 +5,10 @@ import createMetadata from '@/utils/metadata'
 import { getTimeAgo } from '@/utils/time-ago'
 import { Post } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import PostLink from './components/post-link'
 import postsService from '@/api/posts'
+import Tag from '@/components/tag'
 
 type Props = {
   params: {
@@ -48,7 +48,7 @@ const BlogPost = ({ post }: { post: Post }) => {
                 key={`${tag}${index}`}
                 className={`mr-2`}
               >
-                <Link href={`/tags/${tag}`}>{tag}</Link>
+                <Tag tag={tag} />
               </li>
             ))}
           </ul>
