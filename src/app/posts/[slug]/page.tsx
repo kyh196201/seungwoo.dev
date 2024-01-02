@@ -42,12 +42,9 @@ const BlogPost = ({ post }: { post: Post }) => {
 
         {/* tags */}
         {tags.length > 0 && (
-          <ul className={`mt-4 flex`}>
+          <ul className={`mt-4 flex flex-wrap gap-2`}>
             {tags.map((tag, index) => (
-              <li
-                key={`${tag}${index}`}
-                className={`mr-2`}
-              >
+              <li key={`${tag}${index}`}>
                 <Tag tag={tag} />
               </li>
             ))}

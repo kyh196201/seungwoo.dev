@@ -14,7 +14,7 @@ const Tag = ({ tag, count }: Props) => {
       asChild
       variant={'outline'}
       size={'sm'}
-      className={`before:content-['#']`}
+      className={`before:content-['#'] text-sm`}
     >
       <Link href={`/tags/${tag}`}>
         <span className={`ml-1`}>{tag}</span>
