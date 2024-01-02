@@ -43,7 +43,7 @@
 /* #endregion */
 
 .prose hr {
-	@apply mb-6 border-primary;
+	@apply mb-6 border-border;
 }
 
 .prose hr:last-child {
