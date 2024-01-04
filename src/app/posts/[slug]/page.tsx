@@ -9,6 +9,7 @@ import { notFound } from 'next/navigation'
 import PostLink from './components/post-link'
 import postsService from '@/api/posts'
 import Tag from '@/components/tag'
+import PageLayout from '@/components/page-layout'
 
 type Props = {
   params: {
@@ -95,5 +96,9 @@ export default function Page({ params: { slug } }: Props) {
     notFound()
   }
 
-  return <BlogPost post={post} />
+  return (
+    <PageLayout>
+      <BlogPost post={post} />
+    </PageLayout>
+  )
 }
