@@ -13,7 +13,7 @@ const TagList = ({ tags }: Props) => {
           <Tag
             tag={tag.title}
             count={tag.count}
-            size={'lg'}
+            size={'sm'}
             showCount
           />
         </li>
