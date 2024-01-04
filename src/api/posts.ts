@@ -65,7 +65,7 @@ class PostsService {
     const map = new Map<Tag['title'], Tag['count']>()
 
     posts.forEach((post) => {
-      const tags = post.tags || []
+      const tags = (post.tags || []).map((tag) => tag.replace('\r', ''))
       tags.forEach((tag) => {
         if (!map.has(tag)) {
           map.set(tag, 0)
@@ -81,6 +81,22 @@ class PostsService {
     }))
 
     return tags
+  }
+
+  /**
+   * 태그로 게시물을 찾습니다.
+   *
+   * @param {Tag['title']} tag - 검색할 태그입니다.
+   * @return {Post[]} 주어진 태그와 일치하는 게시물의 배열입니다.
+   */
+  findPostsByTag(tag: Tag['title']): Post[] {
+    const posts = this.getAllPosts()
+
+    return posts.filter((post) => {
+      // 파싱 결과에 포함된 캐리지 리턴 제거 'slot\r' -> 'slot'
+      const tags = new Set((post.tags || []).map((tag) => tag.replace('\r', '')))
+      return tags.has(tag)
+    })
   }
 }
 
