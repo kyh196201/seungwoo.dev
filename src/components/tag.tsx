@@ -1,24 +1,29 @@
-import { Button } from '@/components/ui/button'
+import { PostTag } from '@/api/posts'
+import { Button, type ButtonProps } from '@/components/ui/button'
 import Link from 'next/link'
 
+type TagSize = Exclude<Required<ButtonProps>['size'], 'icon' | null>
+
 type Props = {
-  tag: string
-  count?: number
+  tag: PostTag['title']
+  count?: PostTag['count']
+  showCount?: boolean
+  size?: TagSize
 }
 
-const Tag = ({ tag, count }: Props) => {
+const Tag = ({ tag, count, showCount = false, size = 'sm' }: Props) => {
   const hasCount = count !== undefined
 
   return (
     <Button
       asChild
       variant={'outline'}
-      size={'sm'}
-      className={`before:content-['#'] text-sm`}
+      size={size}
+      className={`before:content-['#']`}
     >
       <Link href={`/tags/${tag}`}>
-        <span className={`ml-1`}>{tag}</span>
-        {hasCount && <span className={`ml-1`}>({count})</span>}
+        <span>{tag}</span>
+        {showCount && hasCount && <span className={`ml-1`}>({count})</span>}
       </Link>
     </Button>
   )

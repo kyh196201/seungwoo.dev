@@ -8,7 +8,7 @@ type Props = {
 const TagList = ({ tags }: Props) => {
   return (
     <ul className={`flex flex-wrap gap-2 sm:gap-4`}>
-      {tags.map((tag, index) => (
+      {tags.map((tag) => (
         <li key={tag.title}>
           <Tag
             tag={tag.title}
