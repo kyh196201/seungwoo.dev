@@ -11,10 +11,7 @@ const NavItem = ({ title, link }: { title: string; link: string }) => {
     <Link
       href={link}
       key={title}
-      className={cn(
-        `mx-1 transition-colors font-medium hover:text-gray-900/80 focus:text-gray-900/80`,
-        pathname.startsWith(link) ? 'text-gray-900' : 'text-gray-900/60'
-      )}
+      className={cn(`mx-1 transition-colors font-medium`, pathname.startsWith(link) ? 'text-link' : 'text-link/60')}
     >
       <span className={`px-1 py-2`}>{title}</span>
     </Link>

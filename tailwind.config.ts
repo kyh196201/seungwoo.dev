@@ -43,6 +43,9 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+
+        // custom colors
+        link: 'hsl(var(--link-color))',
       },
       borderRadius: {
         lg: `var(--radius)`,
