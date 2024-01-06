@@ -5,8 +5,10 @@ type Props = {}
 
 const Footer = ({}: Props) => {
   return (
-    <footer>
-      <div className={`flex justify-center mt-16`}>
+    <footer className={`mt-12`}>
+      <p className={`text-sm text-center xs:text-base`}>Copyright &copy; 2024 Seungwoo Kim</p>
+
+      <div className={`flex justify-center xs:mt-2`}>
         <Button
           asChild
           size={'icon'}
@@ -17,7 +19,7 @@ const Footer = ({}: Props) => {
             href="https://github.com/kyh196201"
             target="_blank"
           >
-            <GitHubLogoIcon className={`w-6 h-6`} />
+            <GitHubLogoIcon className={`w-5 h-5 xs:w-6 xs:h-6`} />
             <span className={`sr-only`}>visit kyh196201 github</span>
           </a>
         </Button>
@@ -30,12 +32,10 @@ const Footer = ({}: Props) => {
         >
           <a href="mailto:kyh196201@gmail.com">
             <span className={`sr-only`}>send email to kyh196201@gmail.com</span>
-            <EnvelopeClosedIcon className={`w-6 h-6`} />
+            <EnvelopeClosedIcon className={`w-5 h-5 xs:w-6 xs:h-6`} />
           </a>
         </Button>
       </div>
-
-      <p className={`mt-2 text-center text-base`}>Copyright &copy; 2024 Seungwoo Kim</p>
     </footer>
   )
 }
