@@ -26,6 +26,9 @@ export const DEFAULT_METADATA: Metadata = {
       url: 'https://github.com/kyh196201',
     },
   ],
+  verification: {
+    google: 'TKlKxPqSTcMZQljx-AlWACxTyzL8OqvYZIVfy3U2XnE',
+  },
 }
 
 const isProd = process.env.NODE_ENV === 'production'
