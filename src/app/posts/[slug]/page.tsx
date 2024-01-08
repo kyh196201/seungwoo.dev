@@ -10,6 +10,7 @@ import PostLink from './components/post-link'
 import postsService from '@/api/posts'
 import Tag from '@/components/tag'
 import PageLayout from '@/components/page-layout'
+import TopButton from '@/app/posts/[slug]/components/top-button'
 
 type Props = {
   params: {
@@ -99,6 +100,8 @@ export default function Page({ params: { slug } }: Props) {
   return (
     <PageLayout>
       <BlogPost post={post} />
+
+      <TopButton />
     </PageLayout>
   )
 }

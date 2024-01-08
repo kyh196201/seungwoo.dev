@@ -52,6 +52,7 @@ const config: Config = {
         // custom colors
         link: 'hsl(var(--link-color))',
       },
+
       borderRadius: {
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
@@ -81,6 +82,10 @@ const config: Config = {
 
       maxWidth: {
         '1/2': '50%',
+      },
+
+      zIndex: {
+        '100': '100',
       },
     },
   },
