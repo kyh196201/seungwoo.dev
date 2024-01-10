@@ -89,6 +89,7 @@
   /* https://yeun.github.io/open-color/#gray */
   --text-color: rgb(23, 23, 23);
   --link-color: 221 39.3% 11%;
+  --selection: hsla(0, 0%, 0%, .045);
 
   /* mdx */
   --code-block-line-number-color: rgb(107, 114, 128);
@@ -101,6 +102,10 @@
   :root {
     /* --text-color: 255, 255, 255; */
   }
+}
+
+*::selection {
+  background: var(--selection);
 }
 
 em {

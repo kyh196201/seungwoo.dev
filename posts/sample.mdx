@@ -50,7 +50,7 @@ tags:
 
 기본 코드 블록
 
-```typescript {1-2}
+```ts {1-2}
 import clsx, { type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
  
@@ -61,7 +61,8 @@ export function cn(...inputs: ClassValue[]) {
 
 제목이 있는 코드 블록
 
-```typescript title="제목이 있는 코드 블록"
+````markdown title="utils/index.ts"
+```ts title="utils/index.ts"
 import clsx, { type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
  
@@ -69,6 +70,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 ```
+````
+
+줄 번호가 있는 코드 블록
+
+````markdown showLineNumbers
+```css showLineNumbers
+.prose pre code[data-line-numbers] > [data-line]::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block;
+  width: 1rem;
+  margin-right: 2rem;
+  text-align: right;
+  color: var(--code-block-line-number-color);
+}
+```
+````
 
 ---
 

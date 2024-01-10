@@ -33,10 +33,10 @@ const BlogPost = ({ post }: { post: Post }) => {
   return (
     <article>
       <header className={`mb-4`}>
-        <h2 className={`text-3xl sm:text-4xl font-medium mb-2 break-keep`}>{title}</h2>
+        <h2 className={`text-3xl font-medium mb-2 break-keep`}>{title}</h2>
 
         {/* date & time */}
-        <p className={`text-sm sm:text-base text-gray-600 font-medium`}>
+        <p className={`text-sm text-gray-600 font-medium`}>
           <time>
             {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
           </time>
@@ -55,7 +55,7 @@ const BlogPost = ({ post }: { post: Post }) => {
       </header>
 
       {/* mdx */}
-      <div className={`prose border-b border-t py-12`}>
+      <div className={`prose border-b py-12`}>
         <MDXComponent components={mdxComponents} />
       </div>
 

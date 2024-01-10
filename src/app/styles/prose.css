@@ -60,14 +60,18 @@
 }
 
 /* external link */
+.prose a:not(.anchor).external-link {
+	padding-right: 1rem;
+}
+
 /* TODO: 중복되는 CSS 코드 리팩터링 */
 .prose a:not(.anchor).external-link::after {
 	content: '';
 	position: absolute;
 	top: 50%;
-	right: -20px;
-	width: 15px;
-	height: 15px;
+	right: 0;
+	width: 1rem;
+	height: 1rem;
 	transform: translateY(-50%);
 	background: no-repeat center center / 100% auto;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='none'%3E%3Cpath fill='currentColor' fill-rule='evenodd' d='M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0Z' clip-rule='evenodd'/%3E%3C/svg%3E");
@@ -97,18 +101,23 @@
 }
 
 .prose div[data-rehype-pretty-code-title] {
-	@apply bg-slate-200 font-semibold px-4 py-3 rounded-tl-md rounded-tr-md;
+	@apply text-sm mb-1 text-gray-600;
 }
 
-.prose div[data-rehype-pretty-code-title] + pre {
-	@apply mt-0 border-t-0 rounded-tl-none rounded-tr-none;
+.prose div[data-rehype-pretty-code-title] + .pre-wrapper {
+	@apply overflow-hidden mt-0 border rounded-md;
+}
+
+.prose div[data-rehype-pretty-code-title] + .pre-wrapper pre {
+	@apply my-0 rounded-none border-none;
+	/* @apply my-0 border-t-0 rounded-tl-none rounded-tr-none; */
 }
 
 /* inline code block */
 .prose code:not(pre code) {
 	background: var(--code-block-inline-code-bg-color);
 	color: var(--code-block-inline-code-color);
-	@apply font-semibold py-[3px] px-[5px] rounded-sm;
+	@apply font-semibold py-[3px] px-[5px] rounded-sm after:hidden before:hidden;
 }
 
 .prose pre code {
@@ -125,7 +134,7 @@
 }
 
 /* #region line numbers */
-.prose pre code > [data-line]::before {
+.prose pre code[data-line-numbers] > [data-line]::before {
   counter-increment: line;
   content: counter(line);
  

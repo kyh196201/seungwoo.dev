@@ -7,13 +7,10 @@ interface Props extends React.HTMLAttributes<HTMLPreElement> {
 
 const Pre = ({ children, raw, ...props }: Props) => {
   return (
-    <pre
-      className={`relative`}
-      {...props}
-    >
-      {children}
+    <div className={`relative pre-wrapper`}>
+      <pre {...props}>{children}</pre>
       <CopyButton code={raw ?? ''} />
-    </pre>
+    </div>
   )
 }
 
