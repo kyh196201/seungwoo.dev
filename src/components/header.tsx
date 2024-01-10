@@ -10,9 +10,9 @@ const Header = ({}: Props) => {
       <h1>
         <Link
           href={`/`}
-          className={`flex items-center gap-1 text-2xl font-bold`}
+          className={`flex items-center gap-1 text-2xl font-bold text-link`}
         >
-          <span>sam.dev</span>
+          <span>seungwoo.dev</span>
         </Link>
       </h1>
 
