@@ -1,5 +1,7 @@
+const { CONFIG } = require('./site.config')
+
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.SITE_URL,
+  siteUrl: CONFIG.siteUrl,
   generateRobotsTxt: true,
 }

@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { CONFIG } from '../../site.config'
 
 interface MetadataProps {
   title: string
@@ -18,27 +19,27 @@ interface MetadataProps {
 // https://nextjs.org/docs/app/api-reference/functions/generate-metadata#basic-fields
 export const DEFAULT_METADATA: Metadata = {
   generator: 'Next.js',
-  title: 'sam.dev',
-  description: '승우의 개발 블로그, sam.dev',
+  title: CONFIG.blog.title,
+  description: CONFIG.blog.description,
   authors: [
     {
-      name: 'sam',
-      url: 'https://github.com/kyh196201',
+      name: CONFIG.profile.name,
+      url: `https://github.com/${CONFIG.profile.github}`,
     },
   ],
   verification: {
-    google: 'TKlKxPqSTcMZQljx-AlWACxTyzL8OqvYZIVfy3U2XnE',
+    google: CONFIG.googleSearchConsole.config.siteVerification,
   },
 }
 
 const isProd = process.env.NODE_ENV === 'production'
-const WEB_URL = isProd ? 'https://sam-dev-eight.vercel.app' : `http://localhost:${process.env.PORT || 3000}`
+const WEB_URL = isProd ? CONFIG.siteUrl : `http://localhost:${process.env.PORT || 3000}`
 
 const DEFAULT_IMAGE = `/main.png`
 
 export default function createMetadata(props: MetadataProps): Metadata {
   const { title, description: desc, path, image, label1, label2 } = props
-  const description = desc + ' | 승우의 개발 블로그, sam.dev'
+  const description = desc + ` | ${CONFIG.blog.description}`
 
   const images = `${WEB_URL}${image ?? DEFAULT_IMAGE}`
 
@@ -51,7 +52,7 @@ export default function createMetadata(props: MetadataProps): Metadata {
       title,
       description,
       url: path,
-      siteName: 'sam.dev',
+      siteName: CONFIG.blog.title,
       images,
       locale: 'ko_KR',
     },
