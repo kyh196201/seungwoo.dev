@@ -11,6 +11,8 @@ import postsService from '@/api/posts'
 import Tag from '@/components/tag'
 import PageLayout from '@/components/page-layout'
 import TopButton from '@/app/posts/[slug]/components/top-button'
+import Avatar from '@/app/posts/[slug]/components/avatar'
+import { CONFIG } from 'site.config'
 
 type Props = {
   params: {
@@ -33,14 +35,20 @@ const BlogPost = ({ post }: { post: Post }) => {
   return (
     <article>
       <header className={`mb-4`}>
-        <h2 className={`text-3xl font-medium mb-2 break-keep`}>{title}</h2>
+        <h2 className={`text-3xl md:text-4xl font-medium mb-2 break-keep`}>{title}</h2>
 
         {/* date & time */}
-        <p className={`text-sm text-gray-600 font-medium`}>
-          <time>
-            {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
-          </time>
-        </p>
+        <div className={`flex flex-col xs:flex-row xs:items-center`}>
+          <div className={`flex items-center xs:after:content-['/'] xs:after:mx-1`}>
+            <Avatar />
+            <span className={`text-gray-600 text-sm font-medium`}>{CONFIG.profile.name}</span>
+          </div>
+          <p className={`text-sm text-gray-600 font-medium`}>
+            <time>
+              {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
+            </time>
+          </p>
+        </div>
 
         {/* tags */}
         {tags.length > 0 && (
