@@ -1,0 +1,29 @@
+.post-toc-wrapper {
+	position: relative;
+}
+
+.post-toc {
+	@apply border-l pl-3 absolute ml-10;
+	left: 100%;
+	min-width: 256px;
+}
+
+.post-toc-item:not(:first-child) {
+	@apply mt-2;
+}
+
+.post-toc a {
+	@apply hover:underline;
+}
+
+.post-toc a[data-level="2"] {
+	@apply ml-0;
+}
+
+.post-toc a[data-level="3"] {
+	@apply ml-3;
+}
+
+.post-toc a[data-level="4"] {
+	@apply ml-6;
+}
