@@ -3,8 +3,13 @@
 }
 
 .post-toc {
-	@apply border-l pl-3 absolute ml-10;
+	@apply absolute ml-10 hidden xl:block;
 	left: 100%;
+}
+
+.post-toc-inner {
+	/* TODO: 왜 fixed 잘 적용되는지 모르겠음 */
+	@apply border-l pl-3 fixed;
 	min-width: 256px;
 }
 

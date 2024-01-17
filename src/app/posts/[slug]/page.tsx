@@ -46,21 +46,23 @@ const BlogPost = ({ post }: { post: Post }) => {
       {post.toc && (
         <div className="post-toc-wrapper">
           <div className="post-toc">
-            <h3 className={`sr-only`}>목차</h3>
-            <div>
-              {headings.map((heading) => (
-                <div
-                  key={`#${heading.slug}`}
-                  className="post-toc-item"
-                >
-                  <a
-                    data-level={heading.level.toString()}
-                    href={`#${heading.slug}`}
+            <div className="post-toc-inner">
+              <h3 className={`sr-only`}>목차</h3>
+              <div>
+                {headings.map((heading) => (
+                  <div
+                    key={`#${heading.slug}`}
+                    className="post-toc-item"
                   >
-                    {heading.text}
-                  </a>
-                </div>
-              ))}
+                    <a
+                      data-level={heading.level.toString()}
+                      href={`#${heading.slug}`}
+                    >
+                      {heading.text}
+                    </a>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
