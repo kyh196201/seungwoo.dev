@@ -6,6 +6,7 @@ import rehypeAutolinkHeadings, { Options as RehypeAutolinkHeadingsOptions } from
 import rehypeExternalLinks, { Options as RehypeExternalLinksOptions } from 'rehype-external-links'
 import { readFileSync } from 'fs'
 import { preProcess, postProcess } from './src/utils/rehype-pre-raw'
+import GithubSlugger from 'github-slugger'
 
 export const Post = defineDocumentType(() => ({
   name: 'Post',
@@ -16,11 +17,31 @@ export const Post = defineDocumentType(() => ({
     date: { type: 'string', required: true },
     description: { type: 'string', required: true },
     tags: { type: 'list', default: [], of: { type: 'string' }, required: false },
+    toc: { type: 'boolean', required: false, default: true },
   },
   computedFields: {
     slug: {
       type: 'string',
       resolve: (doc) => doc._raw.sourceFileName.replace('.mdx', ''),
+    },
+
+    headings: {
+      // https://contentlayer.dev/docs/reference/source-files/field-types-defe41e9#list
+      type: 'list',
+      resolve: async (doc) => {
+        const slugger = new GithubSlugger()
+        const regXHeader = /\n(?<flag>#{1,3})\s+(?<content>.+)/g
+        const headings = Array.from(doc.body.raw.matchAll(regXHeader)).map(({ groups }) => {
+          const flag = groups?.flag
+          const content = groups?.content
+          return {
+            level: flag?.length ?? 0,
+            text: content,
+            slug: content ? slugger.slug(content) : undefined,
+          }
+        })
+        return headings
+      },
     },
   },
 }))

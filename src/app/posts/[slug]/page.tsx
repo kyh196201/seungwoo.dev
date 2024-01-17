@@ -13,6 +13,13 @@ import PageLayout from '@/components/page-layout'
 import TopButton from '@/app/posts/[slug]/components/top-button'
 import Avatar from '@/app/posts/[slug]/components/avatar'
 import { CONFIG } from 'site.config'
+import './style.css'
+
+type Heading = {
+  level: number
+  text: string
+  slug: string
+}
 
 type Props = {
   params: {
@@ -22,6 +29,7 @@ type Props = {
 
 const BlogPost = ({ post }: { post: Post }) => {
   const { title, tags = [] } = post
+  const headings = post.headings as Heading[]
   const date = new Date(post.date)
 
   const { nextPost, prevPost } = postsService.findNextAndPrevPost(post)
@@ -33,7 +41,31 @@ const BlogPost = ({ post }: { post: Post }) => {
   }
 
   return (
-    <article>
+    <article className="post">
+      {/* TODO: 컴포넌트 */}
+      {post.toc && (
+        <div className="post-toc-wrapper">
+          <div className="post-toc">
+            <h3 className={`sr-only`}>목차</h3>
+            <div>
+              {headings.map((heading) => (
+                <div
+                  key={`#${heading.slug}`}
+                  className="post-toc-item"
+                >
+                  <a
+                    data-level={heading.level.toString()}
+                    href={`#${heading.slug}`}
+                  >
+                    {heading.text}
+                  </a>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       <header className={`mb-4`}>
         <h2 className={`text-3xl md:text-4xl font-medium mb-2 break-keep`}>{title}</h2>
 
