@@ -9,12 +9,11 @@
 
 .post-toc-inner {
 	/* TODO: 왜 fixed 잘 적용되는지 모르겠음 */
-	@apply border-l pl-3 fixed;
-	min-width: 256px;
+	@apply fixed w-64 pr-5;
 }
 
 .post-toc-item:not(:first-child) {
-	@apply mt-2;
+	@apply mt-3;
 }
 
 .post-toc a {
@@ -26,9 +25,9 @@
 }
 
 .post-toc a[data-level="3"] {
-	@apply ml-3;
+	@apply ml-4;
 }
 
 .post-toc a[data-level="4"] {
-	@apply ml-6;
+	@apply ml-8;
 }
