@@ -1,0 +1,37 @@
+.post-toc {
+	@apply absolute ml-10 hidden xl:block;
+	left: 100%;
+}
+
+.post-toc-inner {
+	/* TODO: 왜 fixed 잘 적용되는지 모르겠음 */
+	@apply fixed w-64 pr-5;
+}
+
+.post-toc-item:not(:first-child) {
+	@apply mt-3;
+}
+
+.post-toc-item:hover a {
+	@apply text-link;
+}
+
+.post-toc-item.active a {
+	@apply text-link font-semibold;
+}
+
+.post-toc-item a {
+	@apply text-link/60 font-medium transition-colors;
+}
+
+.post-toc-item a[data-level="2"] {
+	@apply ml-0;
+}
+
+.post-toc-item a[data-level="3"] {
+	@apply ml-4;
+}
+
+.post-toc-item a[data-level="4"] {
+	@apply ml-8;
+}

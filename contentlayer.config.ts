@@ -8,6 +8,12 @@ import { readFileSync } from 'fs'
 import { preProcess, postProcess } from './src/utils/rehype-pre-raw'
 import GithubSlugger from 'github-slugger'
 
+export type PostHeading = {
+  level: number
+  text: string
+  slug: string
+}
+
 export const Post = defineDocumentType(() => ({
   name: 'Post',
   contentType: 'mdx',
@@ -40,7 +46,7 @@ export const Post = defineDocumentType(() => ({
             slug: content ? slugger.slug(content) : undefined,
           }
         })
-        return headings
+        return headings as PostHeading[]
       },
     },
   },
