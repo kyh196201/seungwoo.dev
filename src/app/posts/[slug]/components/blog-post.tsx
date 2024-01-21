@@ -49,6 +49,8 @@ const BlogPost = ({ post }: Props) => {
       if (activeHElements.length) {
         const id = activeHElements[activeHElements.length - 1].id
         setActiveToc(id)
+      } else {
+        setActiveToc(null)
       }
     }
 
