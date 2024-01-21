@@ -1,3 +1,5 @@
+'use client'
+
 import postsService from '@/api/posts'
 import Pre from './pre'
 import { PostHeading as Heading } from 'contentlayer.config'
@@ -10,6 +12,7 @@ import Tag from '@/components/tag'
 import PostLink from './post-link'
 import { CONFIG } from 'site.config'
 import { getTimeAgo } from '@/utils/time-ago'
+import { useEffect, useState } from 'react'
 
 type Props = {
   post: Post
@@ -29,12 +32,42 @@ const BlogPost = ({ post }: Props) => {
     pre: Pre,
   }
 
+  // #region toc
+  const [activeToc, setActiveToc] = useState<Heading['slug'] | null>(null)
+  // #endregion
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const hElements = document.querySelectorAll('.prose h2, .prose h3')
+
+      const activeHElements = Array.from(hElements).filter((el) => {
+        // viewport 상단으로부터의 위치
+        const top = el.getBoundingClientRect().top
+        return top <= 0
+      })
+
+      if (activeHElements.length) {
+        const id = activeHElements[activeHElements.length - 1].id
+        setActiveToc(id)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
     <article className="post">
       {/* TODO: 컴포넌트 */}
       {post.toc && (
         <div className="relative">
-          <Toc headings={headings} />
+          <Toc
+            headings={headings}
+            activeId={activeToc}
+          />
         </div>
       )}
 
