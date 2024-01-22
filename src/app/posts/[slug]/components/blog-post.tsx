@@ -32,9 +32,7 @@ const BlogPost = ({ post }: Props) => {
     pre: Pre,
   }
 
-  // #region toc
   const [activeToc, setActiveToc] = useState<Heading['slug'] | null>(null)
-  // #endregion
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +51,8 @@ const BlogPost = ({ post }: Props) => {
         setActiveToc(null)
       }
     }
+
+    handleScroll()
 
     window.addEventListener('scroll', handleScroll)
 
