@@ -16,7 +16,7 @@ const TopButton = () => {
   }
 
   useEffect(() => {
-    const toggleVisibility = () => {
+    const updateVisibility = () => {
       if (window.scrollY > 200) {
         setIsVisible(true)
       } else {
@@ -24,9 +24,13 @@ const TopButton = () => {
       }
     }
 
-    window.addEventListener('scroll', toggleVisibility)
+    updateVisibility()
 
-    return () => window.removeEventListener('scroll', toggleVisibility)
+    window.addEventListener('scroll', updateVisibility)
+
+    return () => {
+      window.removeEventListener('scroll', updateVisibility)
+    }
   }, [])
 
   return (

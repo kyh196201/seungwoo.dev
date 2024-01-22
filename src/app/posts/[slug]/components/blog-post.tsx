@@ -35,7 +35,7 @@ const BlogPost = ({ post }: Props) => {
   const [activeToc, setActiveToc] = useState<Heading['slug'] | null>(null)
 
   useEffect(() => {
-    const handleScroll = () => {
+    const updateActiveToc = () => {
       const hElements = document.querySelectorAll('.prose h2, .prose h3')
 
       const activeHElements = Array.from(hElements).filter((el) => {
@@ -52,12 +52,12 @@ const BlogPost = ({ post }: Props) => {
       }
     }
 
-    handleScroll()
+    updateActiveToc()
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', updateActiveToc)
 
     return () => {
-      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('scroll', updateActiveToc)
     }
   }, [])
 
