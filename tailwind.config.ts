@@ -50,7 +50,7 @@ const config: Config = {
         },
 
         // custom colors
-        link: 'hsl(var(--link-color))',
+        link: 'hsl(var(--link))',
       },
 
       borderRadius: {

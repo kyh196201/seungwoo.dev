@@ -35,9 +35,20 @@
     --ring: 215 20.2% 65.1%;
  
     --radius: 0.5rem;
+
+    /* custom */
+    --link: 221 39.3% 11%;
+    --selection: hsla(0, 0%, 0%, .045);
+
+    /* mdx */
+    --code-block-line-number-color: rgb(107, 114, 128);
+    --code-block-highlighted-line-bg-color: rgba(56 ,58 ,66, 0.1);
+    --code-block-inline-code-color: rgb(36, 41, 47);
+    --code-block-inline-code-bg-color: rgba(175, 184, 193, 0.2);
   }
  
-  .dark {
+  .dark,
+  :root[class~="dark"] {
     --background: 224 71% 4%;
     --foreground: 213 31% 91%;
  
@@ -81,26 +92,6 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
-  }
-}
-
-:root {
-  /* primary */
-  /* https://yeun.github.io/open-color/#gray */
-  --text-color: rgb(23, 23, 23);
-  --link-color: 221 39.3% 11%;
-  --selection: hsla(0, 0%, 0%, .045);
-
-  /* mdx */
-  --code-block-line-number-color: rgb(107, 114, 128);
-  --code-block-highlighted-line-bg-color: rgba(56 ,58 ,66, 0.1);
-  --code-block-inline-code-color: rgb(36, 41, 47);
-  --code-block-inline-code-bg-color: rgba(175, 184, 193, 0.2);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* --text-color: 255, 255, 255; */
   }
 }
 

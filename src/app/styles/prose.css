@@ -54,7 +54,6 @@
 .prose a:not(.anchor) {
 	@apply transition ease-in-out opacity-80 hover:opacity-100;
 	position: relative;
-	text-decoration-color: var(--text-color);
 	transition-duration: 0.25s;
 	text-underline-offset: 4px;
 }
