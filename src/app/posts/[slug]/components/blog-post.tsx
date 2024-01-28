@@ -77,12 +77,12 @@ const BlogPost = ({ post }: Props) => {
         <h2 className={`text-3xl md:text-4xl font-medium mb-2 break-keep`}>{title}</h2>
 
         {/* date & time */}
-        <div className={`flex flex-col xs:flex-row xs:items-center`}>
+        <div className={`flex flex-col text-date xs:flex-row xs:items-center`}>
           <div className={`flex items-center xs:after:content-['/'] xs:after:mx-1`}>
             <Avatar />
-            <span className={`text-gray-600 text-sm font-medium`}>{CONFIG.profile.name}</span>
+            <span className={`text-sm font-medium`}>{CONFIG.profile.name}</span>
           </div>
-          <p className={`text-sm text-gray-600 font-medium`}>
+          <p className={`text-sm font-medium`}>
             <time>
               {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})
             </time>

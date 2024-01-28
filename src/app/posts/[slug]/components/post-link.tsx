@@ -17,7 +17,7 @@ const PostLink = ({ isNext = false, post }: Props) => {
     <Link
       href={path}
       className={cn(
-        `flex flex-col max-w-1/2 transition opacity-70 hover:opacity-100 focus:opacity-100`,
+        `flex flex-col max-w-1/2 transition opacity-80 hover:opacity-100 focus:opacity-100`,
         isNext ? 'ml-auto items-end' : ''
       )}
     >

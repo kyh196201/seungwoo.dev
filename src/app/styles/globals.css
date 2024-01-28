@@ -5,7 +5,7 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 47.4% 11.2%;
+    --foreground: 222.2 47.4% 11.2%; /* #0F172A */ 
  
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
@@ -13,15 +13,14 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 47.4% 11.2%;
  
-    /* --border: 214.3 31.8% 91.4%; */
     --border: 210 13.8%	88.6%;
-    --input: 214.3 31.8% 91.4%;
+    --input: 210 13.8%	88.6%;
  
     --card: 0 0% 100%;
     --card-foreground: 222.2 47.4% 11.2%;
  
     --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary-foreground: 210 17% 98%;
  
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
@@ -37,32 +36,33 @@
     --radius: 0.5rem;
 
     /* custom */
-    --link: 221 39.3% 11%;
+    --link: 222.2 47.4% 11.2%;
+    --date: 210 2.4% 49.8%;
     --selection: hsla(0, 0%, 0%, .045);
 
     /* mdx */
+    --mdx-body: hsl(225 24% 20%);
     --code-block-line-number-color: rgb(107, 114, 128);
     --code-block-highlighted-line-bg-color: rgba(56 ,58 ,66, 0.1);
-    --code-block-inline-code-color: rgb(36, 41, 47);
-    --code-block-inline-code-bg-color: rgba(175, 184, 193, 0.2);
+    --code-block-inline-code-bg-color: hsl(210 40% 96.1%);
   }
  
   .dark,
   :root[class~="dark"] {
-    --background: 224 71% 4%;
+    --background: 0 0.0% 7.8%;
     --foreground: 213 31% 91%;
  
     --muted: 223 47% 11%;
     --muted-foreground: 215.4 16.3% 56.9%;
  
-    --accent: 216 34% 17%;
+    --accent: 216 6% 17%;
     --accent-foreground: 210 40% 98%;
  
     --popover: 224 71% 4%;
     --popover-foreground: 215 20.2% 65.1%;
  
-    --border: 216 34% 17%;
-    --input: 216 34% 17%;
+    --border: 216 6% 17%;
+    --input: 216 6% 17%;
  
     --card: 224 71% 4%;
     --card-foreground: 213 31% 91%;
@@ -79,6 +79,15 @@
     --ring: 216 34% 17%;
  
     --radius: 0.5rem;
+
+    /* custom */
+    --link: 213 31% 91%;
+    --date: 0 0.0% 54.5%;
+    --selection: hsla(0, 0%, 100%, .077);
+
+    /* mdx */
+    --mdx-body: hsl(75 6% 87%);
+    --code-block-inline-code-bg-color: hsl(216 6% 17%);
   }
 }
 

@@ -20,7 +20,7 @@ const PostCard = ({ post }: Props) => {
       >
         <h3 className={`text-2xl font-semibold mb-1 line-clamp-2 break-keep`}>{title}</h3>
         <p className={`font-medium mb-2 line-clamp-2 break-keep`}>{description}</p>
-        <time className={`text-sm text-gray-500`}>{formatDate(date, 'MMMM DD, YYYY')}</time>
+        <time className={`text-sm text-date`}>{formatDate(date, 'MMMM DD, YYYY')}</time>
       </Link>
     </>
   )

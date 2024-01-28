@@ -51,6 +51,7 @@ const config: Config = {
 
         // custom colors
         link: 'hsl(var(--link))',
+        date: 'hsl(var(--date))',
       },
 
       borderRadius: {
@@ -87,6 +88,32 @@ const config: Config = {
       zIndex: {
         '100': '100',
       },
+
+      // https://tailwindcss.com/docs/typography-plugin#customizing-the-css
+      typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            '--tw-prose-body': 'var(--mdx-body)', // theme('colors.foreground'),
+            '--tw-prose-headings': theme('colors.foreground'),
+            // '--tw-prose-lead': theme('colors.pink[700]'),
+            '--tw-prose-links': 'var(--mdx-body)',
+            '--tw-prose-bold': 'var(--mdx-body)',
+            '--tw-prose-counters': 'var(--mdx-body)',
+            // '--tw-prose-bullets': theme('colors.pink[400]'),
+            '--tw-prose-hr': theme('colors.border'),
+            '--tw-prose-quotes': 'var(--mdx-body)',
+            '--tw-prose-quote-borders': theme('colors.border'),
+            '--tw-prose-captions': 'var(--mdx-body)',
+            '--tw-prose-code': 'var(--mdx-body)',
+            '--tw-prose-pre-code': 'var(--mdx-body)',
+            // '--tw-prose-pre-bg': theme('colors.pink[900]'),
+            '--tw-prose-th-borders': theme('colors.border'),
+            '--tw-prose-td-borders': theme('colors.border'),
+            // https://tailwindcss.com/docs/typography-plugin#adapting-to-dark-mode
+            // '--tw-prose-invert-body': theme('colors.pink[200]'),
+          },
+        },
+      }),
     },
   },
   plugins: [require('@tailwindcss/typography'), require('tailwindcss-animate')],

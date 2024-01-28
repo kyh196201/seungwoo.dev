@@ -13,7 +13,7 @@ export default function PageLayout({ children, title, description, className }: 
       {(title || description) && (
         <div className={`pb-4 mb-4 border-b`}>
           {title && <h2 className={`text-3xl sm:text-4xl font-medium mb-2`}>{title}</h2>}
-          {description && <p className={`text-gray-600 font-medium`}>{description}</p>}
+          {description && <p className={`text-primary font-medium`}>{description}</p>}
         </div>
       )}
 
