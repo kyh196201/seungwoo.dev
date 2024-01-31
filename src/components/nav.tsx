@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import navLinks from '../constants/navLinks'
 import Link from 'next/link'
 import { cn } from '@/utils'
+import { ThemeToggle } from '@/components/theme-toggle'
 
 const NavItem = ({ title, link }: { title: string; link: string }) => {
   const pathname = usePathname()
@@ -32,8 +33,6 @@ const NavItem = ({ title, link }: { title: string; link: string }) => {
 }
 
 const Nav = () => {
-  const isDark = false
-
   return (
     <nav className={`flex items-center`}>
       {navLinks.map((nav) => (
@@ -43,7 +42,7 @@ const Nav = () => {
         />
       ))}
 
-      {isDark && <button type="button">다크모드</button>}
+      <ThemeToggle />
     </nav>
   )
 }

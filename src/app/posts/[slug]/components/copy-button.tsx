@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react'
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons'
 import { cn } from '@/utils'
+import { useTheme } from 'next-themes'
 
 type Props = {
   code: string
@@ -10,9 +11,8 @@ type Props = {
 
 const CopyButton = ({ code }: Props) => {
   const [isCopied, setIsCopied] = useState(false)
-  // TODO: use dark mode
-  const isDark = true
-  const iconColor = isDark ? '#ffffff' : '#141414' // --background
+  const { theme } = useTheme()
+  const isDark = theme === 'dark'
 
   const handleClick = useCallback(async () => {
     // copy code text
@@ -34,7 +34,7 @@ const CopyButton = ({ code }: Props) => {
       )}
       onClick={handleClick}
     >
-      {isCopied ? <CheckIcon color={iconColor} /> : <CopyIcon color={iconColor} />}
+      {isCopied ? <CheckIcon /> : <CopyIcon />}
     </button>
   )
 }
