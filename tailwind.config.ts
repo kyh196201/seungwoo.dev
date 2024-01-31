@@ -1,5 +1,6 @@
 import type { Config } from 'tailwindcss'
 import defaultTheme from 'tailwindcss/defaultTheme'
+import { PluginUtils } from 'tailwindcss/types/config'
 
 const config: Config = {
   darkMode: ['class'],
@@ -90,7 +91,7 @@ const config: Config = {
       },
 
       // https://tailwindcss.com/docs/typography-plugin#customizing-the-css
-      typography: (theme) => ({
+      typography: (theme: PluginUtils['theme']) => ({
         DEFAULT: {
           css: {
             '--tw-prose-body': 'var(--mdx-body)', // theme('colors.foreground'),
