@@ -53,7 +53,10 @@ export const Post = defineDocumentType(() => ({
 }))
 
 const rehypePrettyCodeOptions: RehypePrettyCodeOptions = {
-  theme: JSON.parse(readFileSync('./code_themes/atom-one-light.json', 'utf-8')),
+  theme: {
+    light: JSON.parse(readFileSync('./code_themes/atom-one-light.json', 'utf-8')),
+    dark: 'one-dark-pro',
+  },
   grid: true,
   keepBackground: true,
 }

@@ -1,5 +1,6 @@
 import { visit } from 'unist-util-visit'
 
+// https://claritydev.net/blog/copy-to-clipboard-button-nextjs-mdx-rehype
 export const preProcess = () => (tree: any) => {
   visit(tree, (node) => {
     if (node?.type === 'element' && node?.tagName === 'pre') {

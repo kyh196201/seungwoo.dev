@@ -162,3 +162,15 @@
 }
 /* #endregion */
 /* #endregion */
+
+/* #region dark mode */
+/* Fenced Code block - display change on theme switching*/
+.light .prose .pre-wrapper[data-theme='dark'],
+.dark .prose .pre-wrapper[data-theme='light'],
+.light .prose pre[data-theme='dark'],
+.dark .prose pre[data-theme='light'],
+.light .prose div[data-rehype-pretty-code-title][data-theme='dark'],
+.dark .prose div[data-rehype-pretty-code-title][data-theme='light'] {
+  display: none;
+}
+/* #endregion */
