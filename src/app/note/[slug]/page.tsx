@@ -6,7 +6,7 @@ import PageLayout from '@/components/page-layout'
 import TopButton from '@/app/posts/[slug]/components/top-button'
 import { fetchNoteBySlug, notion } from '@/api/notion'
 import { NotionToMarkdown } from 'notion-to-md'
-import { mdToHtml } from '@/lib/markdown'
+import Markdown from '@/app/note/[slug]/components/Markdown'
 
 type Props = {
   params: {
@@ -37,18 +37,15 @@ export default async function Page({ params: { slug } }: Props) {
     notFound()
   }
 
-  // const blocks = await fetchNoteBlocks(note.id)
   const n2md = new NotionToMarkdown({ notionClient: notion })
   const mdBlocks = await n2md.pageToMarkdown(note.id)
   const mdString = n2md.toMarkdownString(mdBlocks)
-  console.log(mdString.parent)
-  const htmlString = await mdToHtml(mdString.parent as string)
-  console.log('htmlString', htmlString)
+  const markdownContents = mdString.parent as string
 
   return (
     <PageLayout>
       <div className={`prose border-b py-12`}>
-        <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+        <Markdown markdown={markdownContents} />
       </div>
 
       <TopButton />
