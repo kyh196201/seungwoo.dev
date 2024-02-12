@@ -107,6 +107,10 @@
 	@apply border border-solid p-0;
 }
 
+.prose div[data-rehype-pretty-code-fragment] + div[data-rehype-pretty-code-fragment] {
+	@apply mt-8
+}
+
 .prose div[data-rehype-pretty-code-title] {
 	@apply text-sm mb-1 text-foreground;
 }
