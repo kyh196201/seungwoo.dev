@@ -11,195 +11,186 @@ tags:
 
 ### @each 문자열 배열
 
-- 코드
-    
-    `html` 
-    
-    ```html
-    <ul>
-      <li>
-        <div class="image image-10" data-image-id="10"></div>
-      </li>
-      <li>
-        <div class="image" data-image-id="34"></div>
-      </li>
-      <li>
-        <div class="image" data-image-id="40"></div>
-      </li>
-      <li>
-        <div class="image" data-image-id="56"></div>
-      </li>
-    </ul>
-    ```
-    
-    `scss` 
-    
-    ```scss
-    $image_ids: 10, 34, 40, 56;
-    
-    .image {
-      width: 200px;
-      height: 200px;
-      overflow: hidden;
-      border-radius: 8px;
-      background-repeat: no-repeat;
-      background-size: cover;
-      background-position: center center;
-      
-      @each $id in $image_ids {
-        &[data-image-id="#{$id}"] {
-          background-image: url('https://picsum.photos/id/#{$id}/200/200');
-        }
-      }
-    
-    	// 클래스 방식
-    	@each $id in $image_ids {
-        &.image-#{$id} {
-          background-image: url('https://picsum.photos/id/#{$id}/200/200');
-        }
-      }
+<details>
+<summary>코드</summary>
+
+```html title="html" showLineNumbers
+<ul>
+  <li>
+    <div class="image image-10" data-image-id="10"></div>
+  </li>
+  <li>
+    <div class="image" data-image-id="34"></div>
+  </li>
+  <li>
+    <div class="image" data-image-id="40"></div>
+  </li>
+  <li>
+    <div class="image" data-image-id="56"></div>
+  </li>
+</ul>
+```
+
+```scss title="scss" showLineNumbers
+$image_ids: 10, 34, 40, 56;
+
+.image {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  
+  @each $id in $image_ids {
+    &[data-image-id="#{$id}"] {
+      background-image: url('https://picsum.photos/id/#{$id}/200/200');
     }
-    ```
-    
+  }
+
+  // 클래스 방식
+  @each $id in $image_ids {
+    &.image-#{$id} {
+      background-image: url('https://picsum.photos/id/#{$id}/200/200');
+    }
+  }
+}
+```
+</details>
 
 [https://codepen.io/kyh196201/pen/NWJLJed?editors=1100](https://codepen.io/kyh196201/pen/NWJLJed?editors=1100)
 
 ### **@each, map 같이 사용하기**
 
-- 코드
-    
-    `html` 
-    
-    ```html
-    <ul>
-      <li class="state">default</li>
-      <li class="state succeed">succeed</li>
-      <li class="state error">error</li>
-      <li class="state warning">warning</li>
-      <li class="state disabled">disabled</li>
-    </ul>
-    ```
-    
-    `scss` 
-    
-    ```scss
-    $state_colors: (
-      // 'default': #0066cc,
-      'succeed': #22aa3d,
-      'error': #f52516,
-      'warning': #fab520,
-      'disabled': #acafb5,
-    );
-    
-    ul {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+<details>
+<summary>코드</summary>
+
+```html title="html" showLineNumbers
+<ul>
+  <li class="state">default</li>
+  <li class="state succeed">succeed</li>
+  <li class="state error">error</li>
+  <li class="state warning">warning</li>
+  <li class="state disabled">disabled</li>
+</ul>
+```
+
+```scss title="scss" showLineNumbers
+$state_colors: (
+  // 'default': #0066cc,
+  'succeed': #22aa3d,
+  'error': #f52516,
+  'warning': #fab520,
+  'disabled': #acafb5,
+);
+
+ul {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.state {
+  padding: 5px 10px;
+  border-radius: 4px;
+  list-style-type: none;
+  background-color: #0066cc;
+  
+  @each $name, $color in $state_colors {
+    &.#{$name} {
+      background-color: $color;
     }
-    
-    .state {
-      padding: 5px 10px;
-      border-radius: 4px;
-      list-style-type: none;
-      background-color: #0066cc;
-      
-      @each $name, $color in $state_colors {
-        &.#{$name} {
-          background-color: $color;
-        }
-      }
-    }
-    ```
-    
+  }
+}
+```
+</details>
 
 [https://codepen.io/kyh196201/pen/NWJRwVW?editors=1100](https://codepen.io/kyh196201/pen/NWJRwVW?editors=1100)
 
 ### **@for 특정 횟수 만큼 반복하기(숫자 배열)**
 
-- 코드
-    
-    `html` 
-    
-    ```html
-    <ul>
-      <li class="light">
-        <div class="color"></div>
-        <span>opacity: 1.0</span>
-      </li>
-      <li class="light">
-        <div class="color"></div>
-        <span>opacity: 0.8</span>
-      </li>
-      <li class="light">
-        <div class="color"></div>
-        <span>opacity: 0.6</span>
-      </li>
-      <li class="light">
-        <div class="color"></div>
-        <span>opacity: 0.4</span>
-      </li>
-    </ul>
-    
-    <ul>
-      <li class="dark">
-        <div class="color"></div>
-        <span>opacity: 1.0</span>
-      </li>
-      <li class="dark">
-        <div class="color"></div>
-        <span>opacity: 0.8</span>
-      </li>
-      <li class="dark">
-        <div class="color"></div>
-        <span>opacity: 0.6</span>
-      </li>
-      <li class="dark">
-        <div class="color"></div>
-        <span>opacity: 0.4</span>
-      </li>
-    </ul>
-    ```
-    
-    `scss` 
-    
-    ```scss
-    .color {
-      width: 200px;
-      height: 200px;
-      overflow: hidden;
-      border-radius: 8px;
-      margin-bottom: 4px;
-    }
-    
-    .light {
+<details>
+<summary>코드</summary>
+
+```html title="html" showLineNumbers
+<ul>
+  <li class="light">
+    <div class="color"></div>
+    <span>opacity: 1.0</span>
+  </li>
+  <li class="light">
+    <div class="color"></div>
+    <span>opacity: 0.8</span>
+  </li>
+  <li class="light">
+    <div class="color"></div>
+    <span>opacity: 0.6</span>
+  </li>
+  <li class="light">
+    <div class="color"></div>
+    <span>opacity: 0.4</span>
+  </li>
+</ul>
+
+<ul>
+  <li class="dark">
+    <div class="color"></div>
+    <span>opacity: 1.0</span>
+  </li>
+  <li class="dark">
+    <div class="color"></div>
+    <span>opacity: 0.8</span>
+  </li>
+  <li class="dark">
+    <div class="color"></div>
+    <span>opacity: 0.6</span>
+  </li>
+  <li class="dark">
+    <div class="color"></div>
+    <span>opacity: 0.4</span>
+  </li>
+</ul>
+```
+
+```scss title="scss" showLineNumbers
+.color {
+  width: 200px;
+  height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.light {
+  .color {
+    background-color: #1E4994;
+  }
+  
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) {
       .color {
-        background-color: #1E4994;
-      }
-      
-      @for $i from 1 through 4 {
-        &:nth-child(#{$i}) {
-          .color {
-            opacity: 1 - ($i - 1) * 0.2;
-          }
-        }
+        opacity: 1 - ($i - 1) * 0.2;
       }
     }
-    
-    .dark {
+  }
+}
+
+.dark {
+  .color {
+    background-color: #292E3B;
+  }
+  
+  @for $i from 1 to 5 {
+    &:nth-child(#{$i}) {
       .color {
-        background-color: #292E3B;
-      }
-      
-      @for $i from 1 to 5 {
-        &:nth-child(#{$i}) {
-          .color {
-            opacity: 1 - ($i - 1) * 0.2;
-          }
-        }
+        opacity: 1 - ($i - 1) * 0.2;
       }
     }
-    ```
-    
+  }
+}
+```
+</details>
 
 [https://codepen.io/kyh196201/pen/KKExYgo?editors=1100](https://codepen.io/kyh196201/pen/KKExYgo?editors=1100)
 
@@ -209,15 +200,16 @@ tags:
 
 ---
 
-`#{$name}` 와 같이 `**#{}`**로 변수를 감싸는 것을 **scss interpolation**이라고 한다.
+`#{$name}` 와 같이 `#{}`로 변수를 감싸는 것을 **scss interpolation**이라고 한다.
 
 대표적인 사용 예
 
 - css selector에 사용할 때
+  - `.state.#{$name}`
 - css variable을 선언할 때
-    - `--primary: #{$primary};`
+  - `--primary: #{$primary};`
 - background-image url에 사용할 때
-    - `background-image: url("/icons/#{$name}.svg");`
+  - `background-image: url("/icons/#{$name}.svg");`
 
 이 외에도 다양한 예시가 [공식 문서](https://sass-lang.com/documentation/interpolation/)에 나와있다.
 
