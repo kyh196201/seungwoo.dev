@@ -12,16 +12,16 @@
 	@apply mt-3;
 }
 
+.post-toc-item a {
+	@apply block text-link/60 font-medium transition-colors;
+}
+
 .post-toc-item:hover a {
 	@apply text-link;
 }
 
 .post-toc-item.active a {
 	@apply text-link font-semibold;
-}
-
-.post-toc-item a {
-	@apply text-link/60 font-medium transition-colors;
 }
 
 .post-toc-item a[data-level="2"] {
