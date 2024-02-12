@@ -1,10 +1,8 @@
-import '@/app/styles/prose.css'
 import createMetadata from '@/utils/metadata'
 import { notFound } from 'next/navigation'
 import postsService from '@/api/posts'
 import PageLayout from '@/components/page-layout'
-import TopButton from '@/app/posts/[slug]/components/top-button'
-import BlogPost from './components/blog-post'
+import PostDetail from '@/components/post-detail/post-detail'
 
 type Props = {
   params: {
@@ -20,27 +18,25 @@ export async function generateMetadata({ params }: Props) {
     return {}
   }
 
-  const { title, description } = post
+  const { title, description, path } = post
 
   return createMetadata({
     title,
     description,
-    path: `/posts/${slug}`,
+    path,
   })
 }
 
-export default function Page({ params: { slug } }: Props) {
-  const post = postsService.findPost(slug)
-
+export default function Page({ params }: Props) {
+  const { slug } = params
+  const post = postsService.findPost(slug, 'post')
   if (!post) {
     notFound()
   }
 
   return (
     <PageLayout>
-      <BlogPost post={post} />
-
-      <TopButton />
+      <PostDetail post={post} />
     </PageLayout>
   )
 }
