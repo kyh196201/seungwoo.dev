@@ -17,9 +17,10 @@ export async function generateMetadata({ params }: Props) {
   })
 }
 
-export default function Page({ params: { tag } }: Props) {
+export default function TagPage({ params }: Props) {
+  const { tag } = params
   const posts = postsService.findPostsByTag(tag)
-  const title = `# ${tag.charAt(0).toUpperCase() + tag.slice(1)}`
+  const title = `# ${tag}`
 
   return (
     <PageLayout title={title}>

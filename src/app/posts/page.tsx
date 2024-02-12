@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: '',
 }
 
-export default function Posts() {
+export default function PostsPage() {
   const posts = postsService.getAllPostByDateDesc('post')
 
   return (

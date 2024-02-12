@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: '',
 }
 
-export default function Tags() {
+export default function TagsPage() {
   const tags = postsService.getAllTags()
 
   return (
@@ -18,9 +18,7 @@ export default function Tags() {
       title="태그 목록"
       description="게시글에 사용된 태그를 모아서 보여줍니다."
     >
-      <div className={``}>
-        <TagList tags={tags} />
-      </div>
+      <TagList tags={tags} />
     </PageLayout>
   )
 }

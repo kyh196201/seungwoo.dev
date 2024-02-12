@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props) {
   })
 }
 
-export default function Page({ params }: Props) {
+export default function PostPage({ params }: Props) {
   const { slug } = params
   const post = postsService.findPost(slug, 'post')
   if (!post) {
