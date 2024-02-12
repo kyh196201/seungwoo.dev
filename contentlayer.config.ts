@@ -27,11 +27,16 @@ export const Post = defineDocumentType(() => ({
     toc: { type: 'boolean', required: false, default: true },
   },
   computedFields: {
+    path: {
+      type: 'string',
+      resolve: (doc) => `/${doc._raw.flattenedPath}`,
+    },
+
     postType: {
       type: 'enum',
       options: ['note', 'post'],
-      resolve: (post) => {
-        const dir = post._raw.flattenedPath.split('/')[0]
+      resolve: (doc) => {
+        const dir = doc._raw.flattenedPath.split('/')[0]
         return dir === 'notes' ? 'note' : 'post'
       },
     },

@@ -15,7 +15,7 @@ export default function NotesPage() {
   return (
     <PageLayout
       title="노트"
-      description="배운 내용을 정리합니다."
+      description="배운 내용을 정리하고, 기록하는 공간입니다."
     >
       <div className={`mt-8`}>
         <ul className={`flex flex-col gap-8`}>

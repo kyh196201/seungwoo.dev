@@ -16,7 +16,7 @@ const PostCard = ({ post, showTags = false }: Props) => {
   return (
     <>
       <Link
-        href={getPostPath(post)}
+        href={post.path}
         passHref
         className={`flex flex-col transition opacity-100 hover:opacity-80 focus:opacity-80`}
       >
