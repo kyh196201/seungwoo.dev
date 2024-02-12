@@ -14,39 +14,11 @@ tags:
 화면에 사용할 UI 컴포넌트를 만드는 작업을 담당했는데, 그 중에서 테이블을 만들면서 vue와 타입스크립트에 대한 이해도를 높이는 좋은 경험을 했습니다. 작업하면서 느꼈던 점을 정리하려고 합니다.🙂  
 작업하는 과정에서 많은 자료를 참고했는데, `Vuetify`의 테이블 컴포넌트와 `브랜디 랩스 재사용 가능한 컴포넌트 만들기`를 보면서 많은 도움을 받았습니다.
 
-## 목차
-
-- [주요 개념](#주요-개념)
-- [컴포넌트 구현 중요 목적](#컴포넌트-구현-중요-목적)
-- [컴포넌트 구현](#컴포넌트-구현)
-- [참고](#참고)
-
----
-
-## 주요 개념
-
-### Vue3 SFC
-
-### 슬롯(Slot)
-
-#### 슬롯이란?  
-
-- [뷰 공식 문서 - 슬롯](https://kr.vuejs.org/v2/guide/components-slots.html)
-- [캡틴판교님 블로그 슬롯 관련 글](https://joshua1988.github.io/web-development/vuejs/slots/#slot)
-
-: 슬롯(Slot)이란 컴포넌트의 `재사용성`을 높여주는 기능으로, 하위 컴포넌트의 마크업을 확장하거나 재정의할 수 있는 유용한 기능입니다. (`구현을 사용하는 컴포넌트에서 직접 정의할 수 있습니다.`)
-
-### 컴포넌트간 통신
-
-#### [Vue 컴포넌트](https://kr.vuejs.org/v2/guide/components.html)
-
-#### `props와 emit`
-
 ---
 
 ## 컴포넌트 구현 중요 목적
 
-<b>사용이 쉽고, 재활용하기 어렵지 않은 컴포넌트를 만드는게 목적이었기 때문에 재활용할 부분과 공통적으로 정의할 내용을 분리하는 것이 중요하다고 생각했습니다.</b>
+사용이 쉽고, 재사용하기 어렵지 않은 컴포넌트를 만드는게 목적이었기 때문에 재활용할 부분과 공통적으로 정의할 내용을 분리하는 것이 중요하다고 생각했습니다.
 
 ---
 
@@ -58,7 +30,7 @@ tags:
 `table-body` 컴포넌트와 마찬가지로 복잡한 로직 없이 오직`렌더링`을 담당하는 컴포넌트입니다.  
 뷰 강의에서 `"하위 컴포넌트는 최대한 멍청하게 만드는 것이 좋다."`라는 글을 보고, 복잡한 로직은 테이블 컴포넌트에서 다루거나 `<slot>`을 이용해서 상위 컴포넌트에서 직접 다루도록하는 것이 좋겠다고 생각했습니다.  
 
-#### `타입` 정의
+**`타입` 정의**
 
 우선 컴포넌트가 전달받을 props인 `header`에 들어갈 속성(header 객체의 스펙)을 정의했습니다.
 
@@ -73,7 +45,7 @@ interface Header {
 }
 ```
 
-#### `props` 정의
+**`props` 정의**
 
 - ✨ Vue3 sfc에서는 `setup script`에서 `defineProps`라는 메서드를 이용해서 props를 정의합니다.
 
@@ -98,7 +70,7 @@ const props = defineProps({
 });
 ```
 
-#### `template` 영역
+**`template` 영역**
 
 ```vue
 <template>
@@ -131,7 +103,7 @@ const props = defineProps({
 </template>
 ```
 
-#### `script` 영역
+**`script` 영역**
 
 ```vue
 <script lang="ts">
@@ -185,7 +157,7 @@ const props = defineProps({
 : 테이블 컴포넌트의 `tbody` 영역을 담당하는 컴포넌트입니다.
 `table-header` 컴포넌트와 마찬가지로 `slot` 기능을 이용해서 복잡한 로직을 사용하는 컴포넌트에서 구현하도록 설계했습니다.
 
-#### `타입` 정의
+**`타입` 정의**
 
 : 타입스크립트가 아직 익숙하지 않아서 `body`에 렌더링될 데이터의 스펙을 정의하는 것이 어려웠습니다.  
 
@@ -200,11 +172,11 @@ interface Item {
 }
 ```
 
-#### `props` 정의
+**`props` 정의**
 
-: `Table` 컴포넌트에서 `headers` 프로퍼티를 전달받고, 다시 이 속성을 각각 `table-header`와 `table-body`에 전달해서 화면을 렌더링할때 사용하도록 했습니다.
+: `table` 컴포넌트에서 `headers` 프로퍼티를 전달받고, 다시 이 속성을 각각 `table-header`와 `table-body`에 전달해서 화면을 렌더링할때 사용하도록 했습니다.
   
-초기에는 같은 `headers` 데이터를 `table-header`와 `table-body`에 동일하게 전달했는데, 추가적으로 `다중 헤더 테이블`을 개발하게 되면서 `Table` 컴포넌트에서 `headers` 중 루트 노드만 정제해서 `table-body` 컴포넌트에 전달하는 방식으로 수정했습니다.  
+초기에는 같은 `headers` 데이터를 `table-header`와 `table-body`에 동일하게 전달했는데, 추가적으로 `다중 헤더 테이블`을 개발하게 되면서 `table` 컴포넌트에서 `headers` 중 루트 노드만 정제해서 `table-body` 컴포넌트에 전달하는 방식으로 수정했습니다.  
 따라서, 이름도 혼동되지 않게 `columns`로 변경했습니다.
 
 ```typescript
@@ -232,7 +204,7 @@ const bodyProps = {
 };
 ```
 
-#### `template` 영역
+**`template` 영역**
 
 ```vue
 <template>
@@ -287,7 +259,7 @@ const bodyProps = {
 </template>
 ```
 
-#### `script` 영역
+**`script` 영역**
 
 ```vue
 <script lang="ts">
@@ -311,11 +283,11 @@ export default {
 
 ---
 
-### `Table` 컴포넌트
+### `table` 컴포넌트
 
-처음에는 테이블의 `<thead></thead>` 부분과 `<tbody></tbody>`부분을 컴포넌트로 분리하지 않고, `Table` 컴포넌트 하나에 모두 작성했는데, `Table` 컴포넌트의 가독성을 높이기 위해서 따로 컴포넌트로 분리했습니다.
+처음에는 테이블의 `<thead></thead>` 부분과 `<tbody></tbody>`부분을 컴포넌트로 분리하지 않고, `table` 컴포넌트 하나에 모두 작성했는데, `table` 컴포넌트의 가독성을 높이기 위해서 따로 컴포넌트로 분리했습니다.
 
-따라서, `Table`, `header`, `body` 각각 전달받을 `props`를 정의하고, `Table` 컴포넌트가 전달받은 `props`를 각 자식 컴포넌트에 전달하는 방식이 되었습니다.
+따라서, `table`, `header`, `body` 각각 전달받을 `props`를 정의하고, `table` 컴포넌트가 전달받은 `props`를 각 자식 컴포넌트에 전달하는 방식이 되었습니다.
 
 ```vue
 <template>
@@ -329,7 +301,7 @@ export default {
 </template>
 ```
 
-#### `props` 정의
+**`props` 정의**
 
 : 처음 테이블을 개발할 때 추가적으로 들어갈 기능을 생각하지 않고 개발해서 중간 중간 소스를 다시 뒤집어 엎는 일이 많았습니다.  
 
@@ -418,7 +390,7 @@ const tableProps = {
 };
 ```
 
-#### 기본 기능: 데이터 렌더링하기
+**기본 기능: 데이터 렌더링하기**
 
 `table-header`와 `table-body` 컴포넌트에 필요한 `props`를 전달합니다.  
 기본적인 기능만 필요한 상태여서 `columns`를 따로 계산하지 않고, `headers`를 그대로 전달했습니다.
@@ -439,7 +411,7 @@ const tableProps = {
 </table>
 ```
 
-#### 헤더 영역에 전체 체크박스 추가하기
+**헤더 영역에 전체 체크박스 추가하기**
 
 : 처음에는 이 기능을 `table` 컴포넌트의 `useCheckBox` 속성을 하위 컴포넌트에도 각각 전달하여서 하위 컴포넌트에서 직접 체크 박스를 구현할까 생각했었습니다.  
 
@@ -478,7 +450,7 @@ const tableProps = {
 
 > 부모 템플릿 안에 있는 것들은 부모 컴포넌트의 범위에 컴파일되고 자식 템플릿 안에 있는 것들은 자식 컴포넌트의 범위에 컴파일됩니다.
 
-슬롯을 대체하는 내용은 현재 `Table` 컴포넌트의 범위에서 컴파일되므로 `Table` 컴포넌트에 선언된 `isAllChecked`의 값에 접근할 수 있습니다.
+슬롯을 대체하는 내용은 현재 `table` 컴포넌트의 범위에서 컴파일되므로 `table` 컴포넌트에 선언된 `isAllChecked`의 값에 접근할 수 있습니다.
 
 만약 부모 템플릿 내에서 슬롯에 전달된(하위 컴포넌트에서 바인딩된) 데이터를 사용하려면 Vue에서 제공하는 [범위가 있는 슬롯](https://kr.vuejs.org/v2/guide/components-slots.html#범위가-있는-슬롯-Scoped-Slots) 기능을 사용해서 구현해야 합니다.
 
@@ -497,7 +469,7 @@ const isAllChecked = computed({
 });
 ```
 
-#### 바디 영역에 체크 박스 추가하기
+**바디 영역에 체크 박스 추가하기**
 
 ```vue
 <table class="table">
@@ -520,7 +492,7 @@ const isAllChecked = computed({
 
 : 헤더 영역과 마찬가지로 `useCheckBox`의 값이 `true`면 `table-body` 컴포넌트의 `checkbox`라는 이름을 가진 슬롯을 대체하는 템플릿이 렌더링됩니다.  
 
-헤더 영역과의 차이점은 템플릿에 바인딩된 `row`가 `Table` 컴포넌트의 데이터가 아니라 `table-body` 컴포넌트로부터 전달받은 데이터라는 점입니다.  
+헤더 영역과의 차이점은 템플릿에 바인딩된 `row`가 `table` 컴포넌트의 데이터가 아니라 `table-body` 컴포넌트로부터 전달받은 데이터라는 점입니다.  
 
 위에서 언급했던 것 처럼 부모 컴포넌트에서 하위 컴포넌트의 데이터에 접근해야하는 경우가 있을 수 있습니다.
 
@@ -564,10 +536,10 @@ const slotProps = {
 
 2번의 방식으로 데이터를 꺼낸 경우에 템플릿 상위 내용에서 같은 이름의 변수가 존재하면 충돌이 발생해서 오류 메시지가 나타날 수 있습니다.(보통 `vue eslint`가 검출해줍니다 ㅎㅎ)
 
-#### ✨ 셀을 커스텀할 수 있는 슬롯 만들기
+**✨ 셀을 커스텀할 수 있는 슬롯 만들기**
 
 : 테이블의 셀의 UI를 변경하거나 기능을 추가하기 위해서 한 칸(셀)을 커스터마이징할 수 있는 슬롯을 구현해야 했습니다.  
-현재 컴포넌트의 구조 상 `Table` 컴포넌트를 사용하는 컴포넌트에서 슬롯을 작성해야하고, 작성된 슬롯이 테이블 내용을 대체하기 위해서는 `table-body`와 `table-header`로 대체된 내용이 전달되어야만 합니다.  
+현재 컴포넌트의 구조 상 `table` 컴포넌트를 사용하는 컴포넌트에서 슬롯을 작성해야하고, 작성된 슬롯이 테이블 내용을 대체하기 위해서는 `table-body`와 `table-header`로 대체된 내용이 전달되어야만 합니다.  
 
 우선 `table-body`에 슬롯을 생성해야합니다.
 
@@ -649,7 +621,7 @@ const slotProps = {
 
 ---
 
-#### ✨ 셀을 커스텀할 수 있는 슬롯 만들기
+**✨ 셀을 커스텀할 수 있는 슬롯 만들기**
 
 : 테이블의 특정 셀을 커스터마이징할 수 있는 슬롯을 생성하기 위해서 vuetify의 슬롯을 참고했습니다.  
 vuetify는 `col(셀의 이름)` 형식으로 슬롯을 생성해서 사용자가 특정 셀을 커스터마이징할 수 있는 기능을 제공하고 있습니다.  
@@ -728,7 +700,8 @@ slot의 `name` 속성도 `v-bind`를 이용해서 바인딩할 수 있습니다.
 - [브랜디 랩스 재사용 가능한 컴포넌트 만들기](https://labs.brandi.co.kr/2020/02/04/chunbs.html)
 - [Vuetify 테이블 컴포넌트](https://vuetifyjs.com/en/components/data-tables/#usage)
 - [Vue3 composition API 예제](https://v3.vuejs.org/guide/composition-api-introduction.html#standalone-computed-properties)
-- [Vue Slot](https://kr.vuejs.org/v2/guide/components-slots.html#%EC%BB%B4%ED%8C%8C%EC%9D%BC%EB%90%A0-%EB%95%8C%EC%9D%98-%EB%B2%94%EC%9C%84-Compilation-Scope)
 - [캡틴판교 타입스크립트 핸드북](https://joshua1988.github.io/ts/intro.html)
+- [뷰 공식 문서 - 슬롯](https://kr.vuejs.org/v2/guide/components-slots.html)
+- [캡틴판교님 블로그 슬롯 관련 글](https://joshua1988.github.io/web-development/vuejs/slots/#slot)
 
 ---

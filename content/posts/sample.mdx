@@ -16,38 +16,52 @@ tags:
 
 ## 기본 요소
 
-목록
+**목록**
  
 - 내용 1
   - 하위 내용 1
 - 내용 2
 
-순서 목록
+**순서 목록**
 
 1. 내용 1
 2. 내용 2
 
-인용
+**인용**
 
 > 하루하루는 성실하게<br /> 인생 전체는 되는대로
 
-내부 링크
+**내부 링크**
 
 [Home](/)
 
-외부 링크
+**외부 링크**
 
 [My Github Link](https://github.com/kyh196201)
+
+**접기/펼치기(details/summary)**
+
+<details>
+<summary>제목</summary>
+
+```markdown
+<details>
+<summary>제목</summary>
+<!-- 띄어쓰기 필요 -->
+컨텐츠
+</details>
+```
+</details>
 
 ---
 
 ## 코드 블록
 
-인라인 코드 블록
+**인라인 코드 블록**
 
 `function test() {}` `const str = 'sam'`
 
-기본 코드 블록
+**기본 코드 블록**
 
 ```ts {1-2}
 import clsx, { type ClassValue } from 'clsx'
@@ -58,7 +72,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-제목이 있는 코드 블록
+**제목이 있는 코드 블록**
 
 ````markdown title="utils/index.ts"
 ```ts title="utils/index.ts"
@@ -71,7 +85,7 @@ export function cn(...inputs: ClassValue[]) {
 ```
 ````
 
-줄 번호가 있는 코드 블록
+**줄 번호가 있는 코드 블록**
 
 ````markdown showLineNumbers
 ```css showLineNumbers
@@ -102,3 +116,23 @@ export function cn(...inputs: ClassValue[]) {
 ## 이미지
 
 ![](/posts/sample/javascript-unsplash.jpg)*이미지 캡션*
+
+---
+
+## 임베드
+
+**코드펜(codepen)**
+
+```markdown
+<!-- https://codepen.io/kyh196201/pen/QWgdLjz -->
+<CodePen codePenId="URL 마지막에 있는 ID" />
+```
+
+<CodePen codePenId="QWgdLjz" />
+
+---
+
+## 참고
+
+- https://bepyan.me/post/example
+- https://kilee.dev/blog/next-js-blog-codeblock-styling
