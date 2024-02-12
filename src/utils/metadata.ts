@@ -1,5 +1,6 @@
 import { Metadata } from 'next'
 import { CONFIG } from '../../site.config'
+import postsService from '@/api/posts'
 
 interface MetadataProps {
   title: string
@@ -69,4 +70,19 @@ export default function createMetadata(props: MetadataProps): Metadata {
       ['twitter:data2']: label2?.data ?? '',
     },
   }
+}
+
+export function createPostPageMetadata(slug: string) {
+  const post = postsService.findPost(slug)
+  if (!post) {
+    return {}
+  }
+
+  const { title, description, path } = post
+
+  return createMetadata({
+    title,
+    description,
+    path,
+  })
 }

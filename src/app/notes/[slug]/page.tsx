@@ -1,4 +1,4 @@
-import createMetadata from '@/utils/metadata'
+import { createPostPageMetadata } from '@/utils/metadata'
 import { notFound } from 'next/navigation'
 import postsService from '@/api/posts'
 import PageLayout from '@/components/page-layout'
@@ -12,18 +12,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = params
-  const post = postsService.findPost(slug)
-
-  if (!post) {
-    return {}
-  }
-
-  const { title, description, path } = post
-  return createMetadata({
-    title,
-    description,
-    path,
-  })
+  return createPostPageMetadata(slug)
 }
 
 export default function NotePage({ params }: Props) {
