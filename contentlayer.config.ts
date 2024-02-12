@@ -22,10 +22,20 @@ export const Post = defineDocumentType(() => ({
     title: { type: 'string', required: true },
     date: { type: 'string', required: true },
     description: { type: 'string', required: true },
+    tag: { type: 'string', default: '', required: false },
     tags: { type: 'list', default: [], of: { type: 'string' }, required: false },
     toc: { type: 'boolean', required: false, default: true },
   },
   computedFields: {
+    postType: {
+      type: 'enum',
+      options: ['note', 'post'],
+      resolve: (post) => {
+        const dir = post._raw.flattenedPath.split('/')[0]
+        return dir === 'notes' ? 'note' : 'post'
+      },
+    },
+
     slug: {
       type: 'string',
       resolve: (doc) => doc._raw.sourceFileName.replace('.mdx', ''),
@@ -78,7 +88,7 @@ const rehypeExternalLinksOptions: RehypeExternalLinksOptions = {
 }
 
 export default makeSource({
-  contentDirPath: 'posts',
+  contentDirPath: 'content',
   documentTypes: [Post],
   mdx: {
     rehypePlugins: [

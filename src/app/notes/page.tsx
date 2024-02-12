@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: '',
 }
 
-export default function Posts() {
-  const posts = postsService.getAllPostByDateDesc()
+export default function NotesPage() {
+  const posts = postsService.getAllPostByDateDesc('note')
 
   return (
     <PageLayout

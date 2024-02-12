@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 }
 
 export default function Posts() {
-  const posts = postsService.getAllPostByDateDesc()
+  const posts = postsService.getAllPostByDateDesc('post')
 
   return (
     <PageLayout
