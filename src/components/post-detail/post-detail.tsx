@@ -2,10 +2,8 @@
 
 import '@/app/styles/prose.css'
 import postsService from '@/api/posts'
-import Pre from './pre'
 import { PostHeading as Heading } from 'contentlayer.config'
 import { Post } from 'contentlayer/generated'
-import { useMDXComponent } from 'next-contentlayer/hooks'
 import Toc from './toc'
 import Avatar from './avatar'
 import { formatDate } from '@/utils/days'
@@ -15,6 +13,7 @@ import TopButton from './top-button'
 import { CONFIG } from 'site.config'
 import { getTimeAgo } from '@/utils/time-ago'
 import { useEffect, useState } from 'react'
+import Mdx from './mdx'
 
 type Props = {
   post: Post
@@ -27,12 +26,6 @@ const PostDetail = ({ post }: Props) => {
   const date = new Date(post.date)
 
   const { nextPost, prevPost } = postsService.findNextAndPrevPost(post)
-
-  const MDXComponent = useMDXComponent(post.body.code)
-
-  const mdxComponents = {
-    pre: Pre,
-  }
 
   const [activeToc, setActiveToc] = useState<Heading['slug'] | null>(null)
 
@@ -105,9 +98,7 @@ const PostDetail = ({ post }: Props) => {
         </header>
 
         {/* mdx */}
-        <div className={`prose border-b py-12`}>
-          <MDXComponent components={mdxComponents} />
-        </div>
+        <Mdx code={post.body.code} />
 
         <footer className={`flex items-center justify-between gap-2 mt-4 px-2 text-sm `}>
           {prevPost && <PostLink post={prevPost} />}
