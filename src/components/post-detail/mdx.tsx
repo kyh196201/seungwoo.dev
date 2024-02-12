@@ -1,8 +1,8 @@
 import React from 'react'
 import { Post } from 'contentlayer/generated'
 import { useMDXComponent } from 'next-contentlayer/hooks'
-import { CodePen } from 'mdx-embed'
 import Pre from './pre'
+import CodePen from './code-pen'
 
 type Props = {
   code: Post['body']['code']
