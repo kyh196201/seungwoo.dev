@@ -21,7 +21,7 @@ export const Post = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     date: { type: 'string', required: true },
-    description: { type: 'string', required: true },
+    description: { type: 'string', default: '', required: false },
     tag: { type: 'string', default: '', required: false },
     tags: { type: 'list', default: [], of: { type: 'string' }, required: false },
     toc: { type: 'boolean', required: false, default: true },
