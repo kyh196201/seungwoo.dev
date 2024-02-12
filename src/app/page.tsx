@@ -1,11 +1,15 @@
-import { Metadata } from 'next'
-import { DEFAULT_METADATA } from '@/utils/metadata'
+import createMetadata from '@/utils/metadata'
 import PageLayout from '@/components/page-layout'
 import Image from 'next/image'
 import profileImage from '../../public/profile.jpg'
+import { CONFIG } from '../../site.config'
 
-export const metadata: Metadata = {
-  ...DEFAULT_METADATA,
+export async function generateMetadata() {
+  return createMetadata({
+    title: CONFIG.blog.title,
+    description: CONFIG.blog.description,
+    path: '/',
+  })
 }
 
 export default function HomePage() {

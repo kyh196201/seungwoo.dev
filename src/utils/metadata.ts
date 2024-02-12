@@ -36,7 +36,7 @@ export const DEFAULT_METADATA: Metadata = {
 const isProd = process.env.NODE_ENV === 'production'
 const WEB_URL = isProd ? CONFIG.siteUrl : `http://localhost:${process.env.PORT || 3000}`
 
-const DEFAULT_IMAGE = `/main.png`
+const DEFAULT_IMAGE = `/images/icon-512.png`
 
 export default function createMetadata(props: MetadataProps): Metadata {
   const { title, description: desc, path, image, label1, label2 } = props
