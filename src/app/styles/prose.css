@@ -47,7 +47,7 @@
 /* #endregion */
 
 .prose hr {
-	@apply mb-6 border-border;
+	@apply border-border;
 }
 
 .prose hr:last-child {
@@ -64,18 +64,16 @@
 
 /* external link */
 .prose a.external-link {
-	padding-right: 1rem;
+	word-break: break-all;
 }
 
 /* TODO: 중복되는 CSS 코드 리팩터링 */
 .prose a.external-link::after {
 	content: '';
-	position: absolute;
-	top: 50%;
-	right: 0;
+	display: inline-block;
 	width: 1rem;
 	height: 1rem;
-	transform: translateY(-50%);
+	vertical-align: middle;
 	background: no-repeat center center / 100% auto;
 	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' fill='none'%3E%3Cpath fill='currentColor' fill-rule='evenodd' d='M3.646 11.354a.5.5 0 0 1 0-.707L10.293 4H6a.5.5 0 0 1 0-1h5.5a.5.5 0 0 1 .5.5V9a.5.5 0 0 1-1 0V4.707l-6.646 6.647a.5.5 0 0 1-.708 0Z' clip-rule='evenodd'/%3E%3C/svg%3E");
 }
