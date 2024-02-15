@@ -1,7 +1,7 @@
 ---
 title: 글 예시
 date: 2023-12-18T00:00:00.000Z
-description: 블로그 포스트 마크다운 글 작성 예시
+description: 마크다운에 사용되는 요소를 정리한 글입니다.
 toc: true
 tags:
   - markdown
@@ -16,30 +16,27 @@ tags:
 
 ## 기본 요소
 
-**목록**
+### 목록
  
 - 내용 1
   - 하위 내용 1
 - 내용 2
 
-**순서 목록**
+### 순서 목록
 
 1. 내용 1
 2. 내용 2
 
-**인용**
+### 인용
 
 > 하루하루는 성실하게<br /> 인생 전체는 되는대로
 
-**내부 링크**
+### 링크
 
-[Home](/)
+- [링크](/)
+- [외부 링크](https://github.com/kyh196201)
 
-**외부 링크**
-
-[My Github Link](https://github.com/kyh196201)
-
-**접기/펼치기(details/summary)**
+### 접기/펼치기
 
 <details>
 <summary>제목</summary>
@@ -57,11 +54,11 @@ tags:
 
 ## 코드 블록
 
-**인라인 코드 블록**
+### 인라인 코드 블록
 
-`function test() {}` `const str = 'sam'`
+`console.log('frontend engineer');`
 
-**기본 코드 블록**
+### 기본 코드 블록
 
 ```ts {1-2}
 import clsx, { type ClassValue } from 'clsx'
@@ -72,7 +69,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 ```
 
-**제목이 있는 코드 블록**
+### 제목이 있는 코드 블록
 
 ````markdown title="utils/index.ts"
 ```ts title="utils/index.ts"
@@ -85,7 +82,7 @@ export function cn(...inputs: ClassValue[]) {
 ```
 ````
 
-**줄 번호가 있는 코드 블록**
+### 줄 번호가 있는 코드 블록
 
 ````markdown showLineNumbers
 ```css showLineNumbers
@@ -121,7 +118,7 @@ export function cn(...inputs: ClassValue[]) {
 
 ## 임베드
 
-**코드펜(codepen)**
+### 코드펜
 
 ```markdown
 <!-- https://codepen.io/kyh196201/pen/QWgdLjz -->
