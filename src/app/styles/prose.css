@@ -47,7 +47,7 @@
 /* #endregion */
 
 .prose hr {
-	@apply border-border;
+	@apply border-border my-12;
 }
 
 .prose hr:last-child {
@@ -143,6 +143,10 @@
 }
 
 /* #region line numbers */
+.prose pre code[data-line-numbers] > [data-line] {
+	@apply pl-0;
+}
+
 .prose pre code[data-line-numbers] > [data-line]::before {
   counter-increment: line;
   content: counter(line);
@@ -150,7 +154,7 @@
   /* Other styling */
   display: inline-block;
   width: 1rem;
-  margin-right: 2rem;
+  margin-right: 1.3rem;
   text-align: right;
   color: var(--code-block-line-number-color);
 }
