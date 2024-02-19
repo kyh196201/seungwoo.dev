@@ -39,7 +39,7 @@ const TopButton = () => {
         <Button
           size={'icon'}
           variant={'outline'}
-          className={`fixed bottom-4 right-4 z-100`}
+          className={`fixed bottom-4 right-4 z-10`}
           onClick={scrollToTop}
           asChild
         >

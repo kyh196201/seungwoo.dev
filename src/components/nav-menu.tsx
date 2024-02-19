@@ -10,7 +10,7 @@ const NavMenuTrigger = React.forwardRef<HTMLButtonElement>((props, ref) => {
     <Button
       variant="outline"
       size="icon"
-      className="border-none shadow-none mr-1 md:hidden"
+      className="border-none shadow-none mr-1 md:hidden bg-transparent"
       {...props}
       ref={ref}
     >
