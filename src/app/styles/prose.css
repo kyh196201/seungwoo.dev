@@ -90,7 +90,7 @@
 
 /* #region img */
 .prose img {
-	@apply m-0 border rounded-md;
+	@apply my-0 mx-auto border rounded-md;
 }
 
 /* img caption */
