@@ -58,7 +58,7 @@ class PostsService {
       throw new Error('No post')
     }
 
-    const posts = this.getAllPosts(post.postType as PostType)
+    const posts = this.getAllPostByDateDesc(post.postType as PostType)
     const nextPost = index + 1 <= posts.length - 1 ? posts[index + 1] : null
     const prevPost = index - 1 >= 0 ? posts[index - 1] : null
 
