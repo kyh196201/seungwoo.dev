@@ -11,7 +11,8 @@ const config = {
 	"arrowParens": "always", // braces even for single param in arrow functions (a) => { }
 	"jsxSingleQuote": false, // "" for react props, like in html
 	"bracketSameLine": false, // pretty JSX
-	"singleAttributePerLine": true // print only one attribute per line in Vue SFC templates, HTML, and JSX
+	"singleAttributePerLine": true, // print only one attribute per line in Vue SFC templates, HTML, and JSX,
+	"plugins": ["prettier-plugin-tailwindcss"]
 }
 
 module.exports = config
