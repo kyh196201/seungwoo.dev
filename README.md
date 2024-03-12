@@ -1,7 +1,5 @@
 # seungwoo.dev
 
----
-
 ## 프로젝트 설치 및 실행
 
 ```
@@ -11,8 +9,6 @@ npm run dev
 
 npm run build && npm run start
 ```
-
----
 
 ## 기술 스택
 
