@@ -3,8 +3,9 @@ const CONFIG = {
   since: 2024, // null
   profile: {
     name: 'Seungwoo Kim',
-    github: 'kyh196201',
+    github: 'https://github.com/kyh196201',
     email: 'kyh196201@gmail.com',
+    repo: 'https://github.com/kyh196201/seungwoo.dev',
   },
   blog: {
     title: 'seungwoo.dev',

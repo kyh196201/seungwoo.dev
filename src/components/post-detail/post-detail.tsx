@@ -74,10 +74,14 @@ function PostDetail({ post }: Props) {
 
           {/* date & time */}
           <div className="flex flex-col text-date xs:flex-row xs:items-center">
-            <div className={`flex items-center xs:after:mx-1 xs:after:content-['/']`}>
+            <a
+              href={CONFIG.profile.github}
+              target="_blank"
+              className={`flex items-center xs:after:mx-1 xs:after:content-['/']`}
+            >
               <Avatar />
               <span className="text-sm font-medium">{CONFIG.profile.name}</span>
-            </div>
+            </a>
             <p className="text-sm font-medium">
               <time>
                 {formatDate(date, 'MMMM DD, YYYY')} ({getTimeAgo(date)})

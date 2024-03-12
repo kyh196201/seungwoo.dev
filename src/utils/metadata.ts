@@ -25,7 +25,7 @@ export const DEFAULT_METADATA: Metadata = {
   authors: [
     {
       name: CONFIG.profile.name,
-      url: `https://github.com/${CONFIG.profile.github}`,
+      url: CONFIG.profile.github,
     },
   ],
   verification: {
