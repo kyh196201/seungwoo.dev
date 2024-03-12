@@ -5,7 +5,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 
-export function ThemeToggle() {
+export default function ThemeToggle() {
   const { systemTheme, theme, setTheme } = useTheme()
   const currentTheme = theme === 'system' ? systemTheme : theme
   const isDark = currentTheme === 'dark'
@@ -19,7 +19,7 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
-      className="border-none shadow-none bg-transparent"
+      className="border-none bg-transparent shadow-none"
       onClick={() => toggleTheme()}
     >
       <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />

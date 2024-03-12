@@ -10,7 +10,7 @@ const NavMenuTrigger = React.forwardRef<HTMLButtonElement>((props, ref) => {
     <Button
       variant="outline"
       size="icon"
-      className="border-none shadow-none mr-1 md:hidden bg-transparent"
+      className="mr-1 border-none bg-transparent shadow-none md:hidden"
       {...props}
       ref={ref}
     >
@@ -21,12 +21,12 @@ const NavMenuTrigger = React.forwardRef<HTMLButtonElement>((props, ref) => {
 })
 NavMenuTrigger.displayName = 'NavMenuTrigger'
 
-const NavMenuItem = ({ title, link, onClick }: { title: string; link: string; onClick: () => void }) => {
+function NavMenuItem({ title, link, onClick }: { title: string; link: string; onClick: () => void }) {
   return (
     <li className="mb-4 last-of-type:mb-0">
       <Link
         href={link}
-        className={`block px-1 py-2 transition-colors font-semibold text-link hover:text-link/80 focus:text-link/80`}
+        className="block px-1 py-2 font-semibold text-link transition-colors hover:text-link/80 focus:text-link/80"
         onClick={() => onClick()}
       >
         <span>{title}</span>
@@ -35,7 +35,7 @@ const NavMenuItem = ({ title, link, onClick }: { title: string; link: string; on
   )
 }
 
-const NavMenu = () => {
+function NavMenu() {
   // https://github.com/shadcn-ui/ui/issues/88#issuecomment-1577482090
   const [open, setOpen] = useState(false)
 
@@ -48,11 +48,12 @@ const NavMenu = () => {
         <NavMenuTrigger />
       </SheetTrigger>
 
-      <SheetContent side={'left'}>
+      <SheetContent side="left">
         <ul className="mt-4">
           {navLinks.map((nav) => (
             <NavMenuItem
-              {...nav}
+              link={nav.link}
+              title={nav.title}
               onClick={() => setOpen(false)}
               key={nav.title}
             />

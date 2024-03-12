@@ -1,5 +1,5 @@
-import { createPostPageMetadata } from '@/utils/metadata'
 import { notFound } from 'next/navigation'
+import { createPostPageMetadata } from '@/utils/metadata'
 import postsService from '@/api/posts'
 import PageLayout from '@/components/page-layout'
 import PostDetail from '@/components/post-detail/post-detail'

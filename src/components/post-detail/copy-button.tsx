@@ -2,14 +2,14 @@
 
 import { useCallback, useState } from 'react'
 import { CopyIcon, CheckIcon } from '@radix-ui/react-icons'
-import { cn } from '@/utils'
 import { useTheme } from 'next-themes'
+import { cn } from '@/utils'
 
 type Props = {
   code: string
 }
 
-const CopyButton = ({ code }: Props) => {
+function CopyButton({ code }: Props) {
   const [isCopied, setIsCopied] = useState(false)
   const { theme } = useTheme()
   const isDark = theme === 'dark'
@@ -29,7 +29,7 @@ const CopyButton = ({ code }: Props) => {
     <button
       type="button"
       className={cn(
-        `absolute w-8 h-8 flex items-center justify-center bottom-2 right-2 transition-colors bg-transparent rounded-md`,
+        `absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-md bg-transparent transition-colors`,
         isDark ? 'hover:bg-gray-700 focus:bg-gray-700' : 'hover:bg-gray-200 focus:bg-gray-200'
       )}
       onClick={handleClick}

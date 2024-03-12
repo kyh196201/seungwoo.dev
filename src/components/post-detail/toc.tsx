@@ -11,11 +11,11 @@ type Props = {
   activeId?: Slug | null
 }
 
-const Toc = ({ headings, activeId }: Props) => {
+function Toc({ headings, activeId }: Props) {
   return (
     <div className="post-toc">
       <div className="post-toc-inner">
-        <h3 className={`sr-only`}>목차</h3>
+        <h3 className="sr-only">목차</h3>
         <div>
           {headings.map(({ level, slug, text }) => (
             <div

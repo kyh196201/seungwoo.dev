@@ -8,7 +8,7 @@ type Props = {
   code: Post['body']['code']
 }
 
-const Mdx = ({ code }: Props) => {
+function Mdx({ code }: Props) {
   const MDXComponent = useMDXComponent(code)
 
   const components = {
@@ -17,7 +17,7 @@ const Mdx = ({ code }: Props) => {
   }
 
   return (
-    <div className={`prose border-b py-12`}>
+    <div className="prose border-b py-12">
       <MDXComponent components={components} />
     </div>
   )

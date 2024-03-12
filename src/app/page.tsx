@@ -1,6 +1,6 @@
+import Image from 'next/image'
 import createMetadata from '@/utils/metadata'
 import PageLayout from '@/components/page-layout'
-import Image from 'next/image'
 import profileImage from '../../public/profile.jpg'
 import { CONFIG } from '../../site.config'
 
@@ -15,18 +15,16 @@ export async function generateMetadata() {
 export default function HomePage() {
   return (
     <PageLayout>
-      <div className={`flex flex-col sm:flex-row xs:pt-12 sm:pt-16`}>
-        <div
-          className={`overflow-hidden self-center w-40 mb-4 rounded-full shadow-xl xs:w-52 xs:mb-8 sm:mr-6 sm:self-start sm:w-64 lg:w-96 lg:mr-12`}
-        >
+      <div className="flex flex-col xs:pt-12 sm:flex-row sm:pt-16">
+        <div className="mb-4 w-40 self-center overflow-hidden rounded-full shadow-xl xs:mb-8 xs:w-52 sm:mr-6 sm:w-64 sm:self-start lg:mr-12 lg:w-96">
           <Image
             src={profileImage}
             alt="Seungwoo Kim"
             placeholder="blur"
-            className={`block w-full`}
+            className="block w-full"
           />
         </div>
-        <p className={`break-keep text-sm xs:text-base`}>
+        <p className="break-keep text-sm xs:text-base">
           안녕하세요!
           <br />
           저는 프론트엔드 개발자 <strong>김승우</strong>입니다.

@@ -2,13 +2,13 @@
 
 import { motion } from 'framer-motion'
 import { usePathname } from 'next/navigation'
-import navLinks, { type NavLink } from '@/constants/navLinks'
 import Link from 'next/link'
+import navLinks, { type NavLink } from '@/constants/navLinks'
 import { cn } from '@/utils'
-import { ThemeToggle } from '@/components/theme-toggle'
+import ThemeToggle from '@/components/theme-toggle'
 import NavMenu from '@/components/nav-menu'
 
-const NavItem = ({ title, link }: NavLink) => {
+function NavItem({ title, link }: NavLink) {
   const pathname = usePathname()
   const isActive = pathname.startsWith(link)
 
@@ -17,7 +17,7 @@ const NavItem = ({ title, link }: NavLink) => {
       <Link
         href={link}
         className={cn(
-          `block relative transition-colors font-medium px-1 py-2 hover:text-link/80 focus:text-link/80`,
+          `relative block px-1 py-2 font-medium transition-colors hover:text-link/80 focus:text-link/80`,
           isActive ? 'text-link hover:text-link focus:text-link' : 'text-link/60'
         )}
       >
@@ -29,7 +29,7 @@ const NavItem = ({ title, link }: NavLink) => {
               type: 'spring',
               duration: 0.5,
             }}
-            className="absolute h-[1px] w-full bg-link inset-x-0"
+            className="absolute inset-x-0 h-[1px] w-full bg-link"
           />
         )}
       </Link>
@@ -37,13 +37,14 @@ const NavItem = ({ title, link }: NavLink) => {
   )
 }
 
-const Nav = () => {
+function Nav() {
   return (
-    <nav className={`flex items-center`}>
-      <ul className={`items-center hidden md:flex`}>
+    <nav className="flex items-center">
+      <ul className="hidden items-center md:flex">
         {navLinks.map((nav) => (
           <NavItem
-            {...nav}
+            link={nav.link}
+            title={nav.title}
             key={nav.title}
           />
         ))}

@@ -19,12 +19,12 @@ export default function NotesPage() {
       title="노트"
       description="배운 내용을 정리하고, 기록하는 공간입니다."
     >
-      <div className={`mt-8`}>
-        <ul className={`flex flex-col gap-8`}>
+      <div className="mt-8">
+        <ul className="flex flex-col gap-8">
           {posts.map((post) => (
             <li
               key={post._id}
-              className={`animate-fadeInUp`}
+              className="animate-fadeInUp"
             >
               <PostCard
                 post={post}

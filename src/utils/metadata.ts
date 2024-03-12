@@ -40,7 +40,7 @@ const DEFAULT_IMAGE = `/images/icon-512.png`
 
 export default function createMetadata(props: MetadataProps): Metadata {
   const { title, description: desc, path, image, label1, label2 } = props
-  const description = desc + ` | ${CONFIG.blog.description}`
+  const description = `${desc} | ${CONFIG.blog.description}`
 
   const images = `${WEB_URL}${image ?? DEFAULT_IMAGE}`
 
@@ -64,10 +64,10 @@ export default function createMetadata(props: MetadataProps): Metadata {
       images,
     },
     other: {
-      ['twitter:label1']: label1?.name ?? '',
-      ['twitter:data1']: label1?.data ?? '',
-      ['twitter:label2']: label2?.name ?? '',
-      ['twitter:data2']: label2?.data ?? '',
+      'twitter:label1': label1?.name ?? '',
+      'twitter:data1': label1?.data ?? '',
+      'twitter:label2': label2?.name ?? '',
+      'twitter:data2': label2?.data ?? '',
     },
   }
 }

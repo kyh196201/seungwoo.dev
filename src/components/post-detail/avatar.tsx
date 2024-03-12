@@ -1,14 +1,15 @@
 import Image from 'next/image'
-import avatarImage from '/public/images/avatar.svg'
 
 // TODO: size props
-const Avatar = () => {
+function Avatar() {
   return (
-    <div className={`w-8 h-8`}>
+    <div className="h-8 w-8">
       <Image
-        src={avatarImage}
-        alt="avatar"
-        className={`block w-full`}
+        src="/images/avatar.svg"
+        alt="avatar image"
+        width={32}
+        height={32}
+        className="block w-full"
       />
     </div>
   )

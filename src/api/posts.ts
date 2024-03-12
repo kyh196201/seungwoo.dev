@@ -1,4 +1,5 @@
 import { allPosts, Post } from 'contentlayer/generated'
+import { removeLineBreaks } from '@/utils/string'
 
 type Tag = {
   title: string
@@ -21,6 +22,7 @@ class PostsService {
     return PostsService.instance
   }
 
+  // eslint-disable-next-line class-methods-use-this
   private filterPosts(posts: Post[], type: PostType) {
     return posts.filter((post) => post.postType === type)
   }
@@ -79,7 +81,7 @@ class PostsService {
     const map = new Map<Tag['title'], Tag['count']>()
 
     posts.forEach((post) => {
-      const tags = (post.tags || []).map((tag) => tag.replace('\r', ''))
+      const tags = (post.tags || []).map((tagName) => removeLineBreaks(tagName))
       tags.forEach((tag) => {
         if (!map.has(tag)) {
           map.set(tag, 0)
@@ -108,7 +110,7 @@ class PostsService {
 
     return posts.filter((post) => {
       // 파싱 결과에 포함된 캐리지 리턴 제거 'slot\r' -> 'slot'
-      const tags = new Set((post.tags || []).map((tag) => tag.replace('\r', '')))
+      const tags = new Set((post.tags || []).map((tagName) => removeLineBreaks(tagName)))
       return tags.has(tag)
     })
   }

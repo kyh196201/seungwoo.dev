@@ -6,12 +6,12 @@ interface Props extends React.HTMLAttributes<HTMLPreElement> {
   'data-theme'?: 'light' | 'dark'
 }
 
-const Pre = ({ children, raw, ...props }: Props) => {
+function Pre({ children, raw, ...props }: Props) {
   const theme = props['data-theme'] ?? 'light'
   const code = raw ?? ''
   return (
     <div
-      className={`pre-wrapper relative`}
+      className="pre-wrapper relative"
       data-theme={theme}
     >
       <pre {...props}>{children}</pre>

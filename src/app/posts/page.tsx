@@ -19,7 +19,7 @@ export default function PostsPage() {
       title="글 목록"
       description="공유하고 싶고, 기록하고 싶은 내용을 위한 공간입니다."
     >
-      <div className={`mt-12`}>
+      <div className="mt-12">
         <PostCardList posts={posts} />
       </div>
     </PageLayout>

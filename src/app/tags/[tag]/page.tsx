@@ -24,7 +24,7 @@ export default function TagPage({ params }: Props) {
 
   return (
     <PageLayout title={title}>
-      <div className={`mt-12`}>
+      <div className="mt-12">
         <PostCardList posts={posts} />
       </div>
     </PageLayout>

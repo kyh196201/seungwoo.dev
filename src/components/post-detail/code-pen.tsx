@@ -5,14 +5,14 @@ interface Props {
   codePenId: string
 }
 
-const CodePen = ({ codePenId }: Props) => {
+function CodePen({ codePenId }: Props) {
   const { systemTheme, theme } = useTheme()
   const currentTheme = theme === 'system' ? systemTheme : theme
   const isDark = currentTheme === 'dark'
   const penTheme = isDark ? 'dark' : 'default'
 
   return (
-    <div className={`my-8`}>
+    <div className="my-8">
       <MdxCodePen
         codePenId={codePenId}
         theme={penTheme}

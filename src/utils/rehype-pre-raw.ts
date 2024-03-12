@@ -8,6 +8,7 @@ export const preProcess = () => (tree: any) => {
 
       if (codeEl.tagName !== 'code') return
 
+      // eslint-disable-next-line no-param-reassign
       node.raw = codeEl.children?.[0].value
     }
   })
@@ -20,11 +21,12 @@ export const postProcess = () => (tree: any) => {
         return
       }
 
-      for (const child of node.children) {
+      node.children.forEach((child: any) => {
         if (child.tagName === 'pre') {
-          child.properties['raw'] = node.raw
+          // eslint-disable-next-line no-param-reassign
+          child.properties.raw = node.raw
         }
-      }
+      })
     }
   })
 }

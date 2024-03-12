@@ -1,7 +1,7 @@
-import postsService from '@/api/posts'
-import navLinks from '@/constants/navLinks'
 import { MetadataRoute } from 'next'
 import { CONFIG } from 'site.config'
+import postsService from '@/api/posts'
+import navLinks from '@/constants/navLinks'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const allPosts = postsService.getAllPostByDateDesc('post')

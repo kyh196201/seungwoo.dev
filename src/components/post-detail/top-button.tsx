@@ -1,11 +1,11 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { ArrowUpIcon } from '@radix-ui/react-icons'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { Button } from '@/components/ui/button'
 
-const TopButton = () => {
+function TopButton() {
   const [isVisible, setIsVisible] = useState(false)
 
   const scrollToTop = () => {
@@ -37,9 +37,9 @@ const TopButton = () => {
     <AnimatePresence>
       {isVisible && (
         <Button
-          size={'icon'}
-          variant={'outline'}
-          className={`fixed bottom-4 right-4 z-10`}
+          size="icon"
+          variant="outline"
+          className="fixed bottom-4 right-4 z-10"
           onClick={scrollToTop}
           asChild
         >
@@ -51,7 +51,7 @@ const TopButton = () => {
             transition={{ duration: 0.25 }}
           >
             <ArrowUpIcon />
-            <span className={`sr-only`}>페이지 최상단으로 이동</span>
+            <span className="sr-only">페이지 최상단으로 이동</span>
           </motion.button>
         </Button>
       )}
