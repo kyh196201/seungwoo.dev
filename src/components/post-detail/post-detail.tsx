@@ -14,6 +14,7 @@ import PostLink from './post-link'
 import TopButton from './top-button'
 import { getTimeAgo } from '@/utils/time-ago'
 import Mdx from './mdx'
+import Giscus from '@/components/giscus'
 
 type Props = {
   post: Post
@@ -59,7 +60,6 @@ function PostDetail({ post }: Props) {
   return (
     <>
       <article className="post">
-        {/* TODO: 컴포넌트 */}
         {post.toc && (
           <div className="relative">
             <Toc
@@ -104,16 +104,21 @@ function PostDetail({ post }: Props) {
         {/* mdx */}
         <Mdx code={post.body.code} />
 
-        <footer className={`mt-4 flex items-center justify-between gap-2 px-2 text-sm `}>
-          {prevPost && <PostLink post={prevPost} />}
+        {(prevPost || nextPost) && (
+          <footer className="mb-8 flex items-center justify-between gap-2 border-b px-2 pb-8 text-sm">
+            {prevPost && <PostLink post={prevPost} />}
 
-          {nextPost && (
-            <PostLink
-              isNext
-              post={nextPost}
-            />
-          )}
-        </footer>
+            {nextPost && (
+              <PostLink
+                isNext
+                post={nextPost}
+              />
+            )}
+          </footer>
+        )}
+
+        {/* giscus */}
+        <Giscus />
       </article>
 
       <TopButton />

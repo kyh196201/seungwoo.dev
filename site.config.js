@@ -16,6 +16,12 @@ const CONFIG = {
       siteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || '',
     },
   },
+  giscus: {
+    repo: 'kyh196201/seungwoo.dev',
+    repoId: 'R_kgDOK6uDng',
+    category: 'Announcements',
+    categoryId: 'DIC_kwDOK6uDns4CeNzZ',
+  },
 }
 
 module.exports = { CONFIG }

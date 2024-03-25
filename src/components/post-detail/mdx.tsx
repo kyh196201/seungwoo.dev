@@ -17,7 +17,7 @@ function Mdx({ code }: Props) {
   }
 
   return (
-    <div className="prose border-b py-12">
+    <div className="prose mb-8 border-b py-12">
       <MDXComponent components={components} />
     </div>
   )
