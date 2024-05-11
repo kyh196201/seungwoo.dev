@@ -1,0 +1,127 @@
+---
+title: "Vue에서 부모 컴포넌트가 렌더링 될 때 자식 컴포넌트도 렌더링 될까?"
+date: 2024-05-11 00:00:00
+toc: true
+tags:
+  - vue
+  - vue rendering
+---
+
+이번에 React에 대해서 공부하면서 React는 부모 컴포넌트가 렌더링 되면 자식 컴포넌트도 다시 렌더링 된다는 것을 알게 됐다.
+회사 업무에서 Vue를 사용하고 있었는데, **Vue도 React와 마찬가지로 부모 컴포넌트가 렌더링 될 때 자식 컴포넌트도 렌더링 되는지 궁금해졌다.**
+
+테스트를 위해 간단한 Vue 프로젝트를 만들었다. <br />
+App, Parent, Child 총 3개의 컴포넌트가 존재하고 App → Parent → Child 컴포넌트 순으로 props를 내려주고 있는 구조이다. <br />
+Parent 컴포넌트가 다시 렌더링 될 때 Child 컴포넌트가 다시 렌더링 되는 것을 확인하기 위해 App.vue에 있는 count ref를 업데이트했다.
+
+결론부터 말하자면 Parent 컴포넌트만 렌더링이 발생하고, Child 컴포넌트는 렌더링이 발생하지 않았다.<br />
+이를 통해서 **Vue는 React와 다르게 부모 컴포넌트의 렌더링이 반드시 자식 컴포넌트의 렌더링을 발생시키지 않는다는 것을 알 수 있다.**
+
+테스트에 사용된 컴포넌트는 아래와 같다.
+
+```vue title="App.vue"
+<template>
+	<Parent :count="count" />
+</template>
+
+<script setup lang="ts">
+	cont count = ref(0);
+</script>
+```
+
+```vue title="Parent.vue"
+<template>
+	<Child :count="childCount" />
+</template>
+
+<script setup lang="ts">
+	defineProps<{
+		count: number;
+	}>();
+	
+	cont childCount = ref(0);
+</script>
+```
+-> Parent 컴포넌트는 count를 props로 받고, Child 컴포넌트에게 내부에 선언된 childCount를 내려준다.
+
+```vue title="Child.vue"
+<template>
+	<p>{{ count }}</p>
+</template>
+
+<script setup lang="ts">
+	defineProps<{
+		count: number;
+	}>();
+</script>
+```
+-> Child 컴포넌트는 Parent 컴포넌트로 받은 count props를 화면에 보여준다.
+
+---
+
+## Vue devtools Highlight updates
+
+Vue devtools에서 Highlight updates 옵션이 있다.
+
+이 옵션을 활성화하면 현재 렌더링이 발생하는 컴포넌트를 확인할 수 있다.
+
+React devtools에 이 기능이 있다는 것은 알고 있었는데, Vue에도 동일한 기능이 있다는 것을 이번에 알게 됐다.
+
+![Highlight updates 옵션을 활성화한다.](/posts/vue-rendering/highlight-updates-img.png)
+
+Highlight updates 옵션을 활성화한다.
+
+![](/posts/vue-rendering/highlight-updates-gif.gif)
+
+App, Parent 컴포넌트만 렌더링이 발생하는 것을 확인할 수 있다.
+
+---
+
+## Vue devtools timeline
+
+![](/posts/vue-rendering/timeline-img.png)
+
+Vue devtools에는 timeline 탭이 존재한다.
+
+timeline 탭에서 record 버튼을 클릭하면 빨간색으로 색상이 변경되는데, 이 기능을 통해서 각 컴포넌트의 렌더링이 발생하는지 확인할 수 있다.
+
+![](/posts/vue-rendering/timeline-gif.gif)
+
+녹화를 시작한 상태에서 동일하게 App 컴포넌트의 count가 업데이트될 때 App과 Parent 컴포넌트만 `render` `patch`가 발생하는 것을 확인할 수 있다.
+
+그렇다면 `render`와 `patch`는 각각 무엇을 의미할까?
+
+![](/posts/vue-rendering/mount-render-patch.png)
+
+- `mount`
+    - 이번 테스트에서는 리 렌더링이라서 발생하지 않았지만, 최초 컴포넌트가 렌더링 될 때  `render` 단계에서 생성된 Virtual DOM Tree를 실제 DOM Tree로 만드는 단계를 의미한다.
+- `render`
+    - `.vue` 파일이 컴파일된 render function을 실행해서 Virtual Dom Tree를 생성하는 것을 의미한다.
+- `patch`
+    - 리렌더 Vue가 관리하는 두 개의 Virtual Dom Tree를 비교해서 변경된 부분을 찾는다.
+    리 렌더링이 발생하면 새로운 Virtual Dom Tree가 생성되고, 이전 Virtual Dom Tree와 비교해서 변경이 필요한 부분을 찾는다. 
+    `patch` 단계는 변경된 부분을 실제 Dom Tree에 반영하는 것을 의미한다.(`reconciliation`이라고도 불린다.)
+
+Vue 공식 문서에  설명된 [렌더 파이프라인](https://vuejs.org/guide/extras/rendering-mechanism#render-pipeline)을 보면 `patch` `mount`가 같은 단계에 있는 것을 확인할 수 있는데, 최초 컴포넌트가 렌더링 된 Virtual Dom Tree가 실제 Dom Tree로 될 때는 `mount`고, 그 이후에 변경 점을 실제 돔 트리에 반영하는 것은 `patch`라고 한다.
+
+즉, 위 이미지에서 확인할 수 있듯이 App 컴포넌트와 Parent 컴포넌트는 props가 변경되어서 렌더 함수를 다시 실행했고(`render` 단계), Virtual Dom Tree를 새로 생성한 후 이전 Dom Tree와 비교해서 변경된 부분을 반영하는 `patch` 단계까지 실행된 것이다.
+
+---
+
+## 결론
+
+React 함수형 컴포넌트는 렌더링할 때 마다 함수를 매번 실행하기 때문에 자식 컴포넌트도 다시 렌더링 된다.
+
+하지만 Vue는 반응형을 구현하기 위해서 `Proxy`를 사용한다.
+
+`Proxy`를 이용해 반응형 변수가 사용되는 지점을 트래킹(추적)하고, 값이 변경되었을 때 추적하고 있는 곳을 찾아가서 업데이트하는 방식으로 구현되어 있기 때문에 부모 컴포넌트가 렌더링 될 때 자식 컴포넌트가 반드시 렌더링 되지 않는다.
+
+예제 코드는 [저장소](https://github.com/kyh196201/vue-playground)에서 확인할 수 있습니다.
+
+---
+
+## 참고
+
+- [https://vuejs.org/guide/extras/rendering-mechanism#render-pipeline](https://vuejs.org/guide/extras/rendering-mechanism#render-pipeline)
+- [https://vuejs.org/guide/essentials/lifecycle](https://vuejs.org/guide/essentials/lifecycle)
+- [https://www.youtube.com/watch?v=PvDBiGGLhjQ&t=165s&ab_channel=Eunjae](https://www.youtube.com/watch?v=PvDBiGGLhjQ&t=165s&ab_channel=Eunjae)
