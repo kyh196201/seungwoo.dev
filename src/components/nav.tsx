@@ -29,6 +29,8 @@ function NavItem({ title, link }: NavLink) {
               type: 'spring',
               duration: 0.5,
             }}
+            // https://github.com/framer/motion/issues/1972#issuecomment-1483452870
+            style={{ originY: '0px' }}
             className="absolute inset-x-0 h-[1px] w-full bg-link"
           />
         )}
