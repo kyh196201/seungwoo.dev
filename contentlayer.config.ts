@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+import readingTime from 'reading-time'
 import { defineDocumentType, makeSource } from 'contentlayer/source-files'
 import remarkGfm from 'remark-gfm'
 import rehypePrettyCode, { type Options as RehypePrettyCodeOptions } from 'rehype-pretty-code'
@@ -5,8 +7,8 @@ import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings, { Options as RehypeAutolinkHeadingsOptions } from 'rehype-autolink-headings'
 import rehypeExternalLinks, { Options as RehypeExternalLinksOptions } from 'rehype-external-links'
 import { readFileSync } from 'fs'
-import { preProcess, postProcess } from './src/utils/rehype-pre-raw'
 import GithubSlugger from 'github-slugger'
+import { preProcess, postProcess } from './src/utils/rehype-pre-raw'
 
 export type PostHeading = {
   level: number
@@ -62,6 +64,13 @@ export const Post = defineDocumentType(() => ({
           }
         })
         return headings as PostHeading[]
+      },
+    },
+
+    readTimeMinutes: {
+      type: 'string',
+      resolve: (doc) => {
+        return readingTime(doc.body.raw).text
       },
     },
   },
