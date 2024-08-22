@@ -22,6 +22,7 @@ type Props = {
 
 function PostDetail({ post }: Props) {
   const { title, tags = [], readTimeMinutes } = post
+  const isBlogPost = post.postType !== 'note'
   const headings = post.headings as Heading[]
   // TODO: publishedDate
   const date = new Date(post.date)
@@ -73,7 +74,7 @@ function PostDetail({ post }: Props) {
           <h2 className="mb-2 break-keep text-3xl font-medium md:text-4xl">{title}</h2>
 
           {/* date & time */}
-          <div className="mb-2 flex flex-col text-date xs:flex-row xs:items-center">
+          <div className="flex flex-col text-date xs:flex-row xs:items-center">
             <a
               href={CONFIG.profile.github}
               target="_blank"
@@ -90,7 +91,7 @@ function PostDetail({ post }: Props) {
           </div>
 
           {/* reading-time */}
-          <div className="text-sm font-medium text-date">{readTimeMinutes}</div>
+          {isBlogPost && <div className="text-sm font-medium text-date">{readTimeMinutes}</div>}
 
           {/* tags */}
           {tags.length > 0 && (
