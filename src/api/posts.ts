@@ -10,7 +10,13 @@ export const POST_TYPE = {
   NOTE: 'note',
   POST: 'post',
 } as const
+
 export type PostType = (typeof POST_TYPE)[keyof typeof POST_TYPE]
+
+function getPostTags(post: Post) {
+  // 파싱 결과에 포함된 캐리지 리턴 제거 'slot\r' -> 'slot'
+  return post.tags.map((tag) => removeLineBreaks(tag))
+}
 
 class PostsService {
   private static instance: PostsService
@@ -81,7 +87,7 @@ class PostsService {
     const map = new Map<Tag['title'], Tag['count']>()
 
     posts.forEach((post) => {
-      const tags = (post.tags || []).map((tagName) => removeLineBreaks(tagName))
+      const tags = getPostTags(post)
       tags.forEach((tag) => {
         if (!map.has(tag)) {
           map.set(tag, 0)
@@ -109,8 +115,7 @@ class PostsService {
     const posts = this.getAllPosts()
 
     return posts.filter((post) => {
-      // 파싱 결과에 포함된 캐리지 리턴 제거 'slot\r' -> 'slot'
-      const tags = new Set((post.tags || []).map((tagName) => removeLineBreaks(tagName)))
+      const tags = new Set(getPostTags(post))
       return tags.has(tag)
     })
   }
