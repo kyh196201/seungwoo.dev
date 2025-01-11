@@ -1,0 +1,45 @@
+---
+title: 'package-lock.json이 필요한 이유'
+date: 2025-01-11 14:00:00
+toc: false
+---
+
+최근 회사에서 프로젝트를 개발하면서 상용 서버에서 기능이 동작하지 않는 이슈를 경험했습니다.
+로컬에서는 정상적으로 동작하는 기능이 상용 서버에서만 동작하지 않았습니다.
+
+유효성 검사가 실패하면 `name` 속성을 이용해서 포커싱할 엘리먼트를 찾고 있었는데, `name`이 렌더링되지 않으면서 포커스가 이동하지 않고 있었습니다.
+
+프로젝트에서 `package-lock.json`을 관리하지 않고, 상용 서버를 배포할 때 `npm install`을 실행해서 의존하는 패키지(primevue)의 새로운 버전이 설치된 것이 원인이었습니다.<br />
+[`primevue` 라이브러리의 특정 버전(4.2.2)에서 `name` 속성이 렌더링되지 않는 이슈](https://github.com/primefaces/primevue/issues/6737)
+
+이번 이슈를 통해서 `package-lock.json`의 중요성에 대해서 다시 한번 알게됐습니다.
+
+---
+
+### `package-lock.json`이 필요한 이유
+
+primevue를 프로젝트에 설치하기 위해 `npm install primevue`를 실행하면 `package.json`에 아래와 같이 추가됩니다.
+
+```json title="package.json"
+"dependencies": {
+	"primevue": "^4.1.1"
+}
+```
+
+npm 패키지는 버전을 명시할 때 [node-semver](https://github.com/npm/node-semver#versions) 규칙을 따릅니다.
+
+`^4.1.1`은 `npm install`을 실행할 때 "4.1.1" 버전을 포함하여 "5.0.0" 버전 미만의 버전이 설치될 수 있다는 것을 의미합니다.
+
+즉, 메이저 버전(예시에서는 4)은 고정되고 `primevue` 패키지가 업데이트되어 새로운 버전이 배포되면 설치하는 시점에 따라 다른 버전이 설치될 수 있다는 것을 의미합니다.
+
+글을 작성하는 시점에 위 `package.json`을 기준으로 `npm install`을 실행하면 "4.2.5" 버전이 설치되는 것을 확인할 수 있습니다.
+
+![](/posts/package-lock-json/primevue-npm-ls.png)*npm ls를 실행한 결과*
+
+이번 프로젝트에서 발생한 이슈처럼 의존하는 패키지가 업데이트되고 새로운 버전이 설치되어서 프로젝트의 특정 기능이 정상적으로 동작하기 않고, 치명적인 결함으로 이어질 수 있습니다.
+
+이처럼 `npm install`을 실행하는 시점에 설치되는 패키지의 버전이 변경되는 것을 막기 위해서 `package-lock.json`을 커밋해서 프로젝트에 사용되는 패키지의 버전을 관리합니다.
+
+`package-lock.json`파일은 생성된 시점의 의존성 트리에 대한 정확한 정보를 가지기 때문에 `node_modules`폴더를 커밋하는 프로젝트가 아닐 경우 의존성 패키지들의 정확한 버전을 관리하는 것이 좋습니다.
+
+또한, `npm ci` 명령어를 사용하면 `package-lock.json`의 정보를 바탕으로 프로젝트에 필요한 패키지를 **정확한 버전**으로 설치할 수 있습니다.
