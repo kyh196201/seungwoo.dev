@@ -18,9 +18,14 @@ import Giscus from '@/components/giscus'
 
 type Props = {
   post: Post
+  views?: number
 }
 
-function PostDetail({ post }: Props) {
+const addComma = (num: number): string => {
+  return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+}
+
+function PostDetail({ post, views }: Props) {
   const { title, tags = [], readTimeMinutes } = post
   const isBlogPost = post.postType !== 'note'
   const headings = post.headings as Heading[]
@@ -92,6 +97,7 @@ function PostDetail({ post }: Props) {
 
           {/* reading-time */}
           {isBlogPost && <div className="text-sm font-medium text-date">{readTimeMinutes}</div>}
+          <div className="text-sm font-medium text-date">{addComma(views ?? 0)} views</div>
 
           {/* tags */}
           {tags.length > 0 && (
