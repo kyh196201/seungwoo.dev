@@ -8,14 +8,14 @@ tags:
   - optimistic updates
 ---
 
-항해가 끝나고 새로운 기술 스터디를 시작했습니다.
+항해를 마친 후 새로운 기술 스터디를 시작했습니다.<br />
 평소 회사에서는 vue를 사용하기 때문에 리액트의 새로운 기능에 대해서 알아보고 싶었고, 이를 통해서 여러 인사이트를 얻기 위해서 공식문서를 통해 새롭게 나온 기술에 대해서 학습해보는 시간을 가졌습니다.<br />
-여러 hook이 새로 추가됐지만 그 중에서도 `useOptimistic`에 대해서 자세하게 알아봤습니다.
+여러 훅이 새로 추가됐지만 그 중에서도 `useOptimistic`에 대해서 자세하게 알아봤습니다.
 
 ## 낙관적 업데이트(Optimistic Updates)란?
 
-<u>네트워크 요청과 같이 비동기 작업을 기다리는 동안 사용자의 화면을 먼저 기대되는 결과로 업데이트하는 것</u>을 말합니다.("내가 예상한대로 응답이 올거야!"라는 낙관적인 기대를 가지고 미리 클라이언트의 상태를 업데이트하는 것)<br />
-따라서, 사용자는 동작에 대한 피드백을 빨리 받을 수 있게되고 애플리케이션이 빠르게 동작한다고 느낄 수 있습니다.
+> **네트워크 요청과 같이 비동기 작업이 완료되는 것을 기다리지 않고, UI를 먼저 기대되는 결과로 업데이트하는 것**을 말합니다.
+사용자는 동작에 대한 피드백을 빨리 받아 애플리케이션이 빠르게 동작한다고 느낄 수 있고, 사용자 경험을 향상할 수 있습니다.
 
 낙관적 업데이트의 핵심 아이디어는 다음과 같습니다.
 
@@ -27,111 +27,6 @@ tags:
 
 ---
 
-아래는 낙관적 업데이트에 대한 지식이 없을 때 제가 업무를 하면서 구현한 관심 브랜드 추가/제거 기능입니다.
-코드의 동작은 다음과 같습니다.
-
-1. 관심 브랜드일 경우 관심 브랜드에서 제거하는 API를 요청
-2. 관심 브랜드가 아닐 경우 관심 브랜드에 추가하는 API를 요청
-3. API 응답이 도착하면 사용자의 화면을 업데이트
-4. 이때, API 요청이 진행중인 동안 사용자가 추가적으로 버튼을 클릭할 경우 무시
-
-사용자는 버튼을 클릭한 후 일정 시간이 지나고 API 요청이 완료되어 응답이 도착한 후에 좋아요 버튼이 변경되는 것을 볼 수 있습니다.
-
-```tsx
-// 현재 접속한 브랜드의 Id
-const brandId = route.params.brandId;
-// 좋아요 여부
-const isLiked = ref(false);
-// 현재 좋아요 개수
-const likeCount = ref(0);
-// API 요청중인지 체크하기 위한 pending 변수
-const isPending = ref(false);
-
-const addLike = () => {
-	return Api.addLike(brandId.value)
-	.then((response) => {
-		isLiked.value = true;
-		likeCount.value = response.likeCount;
-	}).catch((error) => {
-		console.error('addLike failed: ', error)
-	});
-};
-
-const removeLike = () => {
-	return Api.removeLike(brandId.value)
-	.then((response) => {
-		isLiked.value = false;
-		likeCount.value = response.likeCount;
-	}).catch((error) => {
-		console.error('removeLike failed: ', error)
-	});
-}
-
-const handleLike = async () => {
-	if (isPending.value) return;
-
-	isPending.value = true;
-
-	if (isLiked.value) {
-		await removeLike();
-	} else {
-		await addLike();
-	}
-
-	isPending.value = false;
-};
-```
-
-
-낙관적 업데이트가 적용된 코드는 다음과 같습니다.<br />
-API 요청을 하기 전에 컴포넌트의 상태를 즉시 업데이트하고, API 성공/실패 여부에 따라 서버의 응답을 컴포넌트 상태에 반영하도록 코드를 수정했습니다.
-
-```tsx
-const addLike = () => {
-	// 현재 상태를 저장
-	const prevIsLike = isLiked.value;
-	const prevLikeCount = likeCount.value;
-
-	// 💡 Optimistic Updates
-	// 기대되는 결과에 맞게 상태를 업데이트
-	isLiked.value = true;
-	likeCount.value += 1;
-
-	return Api.addLike(brandId.value)
-	.then((response) => {
-		likeCount.value = response.likeCount;
-	}).catch((error) => {
-		console.error('addLike failed: ', error);
-
-		// 💡 에러가 발생하면 이전 상태로 복원
-		isLiked.value = prevIsLike;
-		likeCount.value = prevLikeCount;
-	});
-};
-
-const removeLike = () => {
-	const prevIsLike = isLiked.value;
-	const prevLikeCount = likeCount.value;
-
-	// 💡 Optimistic Updates
-	isLiked.value = false;
-	likeCount.value -= 1;
-
-	return Api.removeLike(brandId.value)
-	.then(() => {
-		likeCount.value = response.likeCount;
-	}).catch((error) => {
-		console.error('removeLike failed: ', error);
-
-		// 💡 에러가 발생하면 이전 상태로 복원
-		isLiked.value = prevIsLike;
-		likeCount.value = prevLikeCount;
-	});
-}
-```
-
----
-
 ## React19 useOptimistic 훅
 
 리액트 19 버전에서 낙관적 업데이트를 쉽게 구현할 수 있는 `useOptimistic` 훅이 새롭게 추가됐습니다.<br />
@@ -139,182 +34,73 @@ const removeLike = () => {
 
 > useOptimistic은 React Hook으로, 비동기 작업이 진행 중일 때 다른 상태를 보여줄 수 있게 해줍니다.
 
-useOptimistic 훅을 이해하기 위해서 Vue3로 작성한 코드와 동일한 기능을 구현해봤습니다.
+useOptimistic 훅을 이해하기 위해서 간단한 좋아요 버튼 컴포넌트를 구현했습니다.
 
-```tsx title="LikeButton.tsx"
+<details>
+<summary><b>전체 코드 보기</b></summary>
+
+```tsx
 import { Heart } from "lucide-react";
-import { useOptimistic, startTransition } from "react";
- 
+import { useOptimistic, useTransition, useState, useEffect } from "react";
+
 interface State {
 	isLike: boolean
 	count: number
 }
 
-type Value = State['isLike']
- 
 export default function LikeButton() {
-	const state: State = { 
-		isLike: false,
-		count: 0
-	}
-	
-	const updateFn = (currentState: State, optimisticValue: Value): State => {
-		return {
-			isLike: optimisticValue,
-			count: optimisticValue ? currentState.count + 1 : currentState.count - 1
-		}
-	}
-
-	// useOptimistic 훅 호출
-	const [optimisticState, toggleOptimisticIsLike] = useOptimistic<State, Value>(
-		state,
-		updateFn
-	)
- 
-	const handleClick = () => {
-		startTransition(async () => {
-			toggleOptimisticIsLike(!optimisticState.isLike)
- 
-			// 비동기 액션이 바로 종료되는 것을 방지하기 위해 2초 지연 추가
-			await new Promise<void>((resolve) => {
-				setTimeout(resolve, 2000)
-			})
-		})
-	}
- 
-	const heartIcon = optimisticState.isLike ? 
-		<Heart color="#d04e4e" fill="#d04e4e" size={80} /> : 
-		<Heart color="#d04e4e" size={80} />
- 
-	return (
-		<button type="button" onClick={handleClick}>
-			{heartIcon}
-			<span>{optimisticState.count}</span>
-		</button>
-	)
-}
-```
-
-`useOptimistic` 훅은 2개의 파라미터를 받습니다.
-
-- state
-    - 초기 상태에 해당하는 값입니다.
-- updateFn
-    - 현재 상태를 기준으로 비동기 액션이 진행 중인 동안(pending 상태일 때) 화면에 보여줄 낙관적인 상태를 계산하는 함수입니다.
-    - `toggleOptimisticIsLike` 함수가 호출되면 `useOptimistic` 내부의 현재 상태를 기준으로 `updateFn`을 실행하여 새로운 상태를 반환합니다.
-
-`useOptimistic` 훅 반환 값
-
-- optimisticState
-    - 비동기 액션이 진행 중인 동안 화면에 보여질 상태입니다.
-    - `updateFn`이 반환한 값과 동일합니다.
-    - 비동기 액션이 종료되면 초기 `state`로 되돌아갑니다.
-- toggleOptimisticIsLike
-    - `optimisticState`를 업데이트하기 위해 호출하는 함수입니다.
-    - 호출 시 전달받은 파라미터가 `updateFn`의 두 번째 인자로 전달되고, 이 값은 `updateFn`이 새로운 상태를 계산하는 데 사용됩니다.
-
----
-
-```tsx
-const handleClick = () => {
-	// 1. 
-	startTransition(async () => {
-		// 2. 💡 Optimistic Updates
-		toggleOptimisticIsLike(!optimisticState.isLike)
-
-		// 3. API 요청을 시뮬레이션하기 위해 2초의 지연 설정
-		await new Promise<void>((resolve) => {
-			setTimeout(resolve, 2000)
-		})
-	})
-}
-```
-
-1. 비동기 액션 내부에서 `toggleOptimisticIsLike` 함수를 호출하기 위해서 `startTransition`을 사용했습니다. 
-    - [`startTransition` 의 인자로 전달하는 함수를 Action이라고 부릅니다.](https://ko.react.dev/reference/react/useTransition#functions-called-in-starttransition-are-called-actions)
-    - `startTransition`의 Action이 호출되는 동안은 `pending` 상태가 유지되고, 이 시간 동안 `updateFn` 함수가 반환된 값이 `optimisticState`로 사용됩니다.
-2. 낙관적인 상태를 업데이트하기 위해 `toggleOptimisticIsLike` 함수를 호출합니다. 현재 좋아요 상태와 반대되는 값을 인자로 전달합니다.
-    - `updateFn` 의 `optimisticValue`로 `true`가 전달되고, `optimisticState.count`가 1 증가합니다.
-    
-    ```tsx
-    const updateFn = (currentState: State, optimisticValue: Value): State => {
-    	return {
-    		// 1. optimisticValue가 true로 호출
-    		isLike: optimisticValue,
-    		// 2. 변경하고자 하는 상태가 좋아요 상태일 경우 좋아요 개수 1 증가, 
-    		// 좋아요 해제일 경우 개수 1 감소된 상태를 반환
-    		count: optimisticValue ? currentState.count + 1 : currentState.count - 1
-    	}
-    }
-    ```
-    
-3. 액션이 호출되는 동안 낙관적인 상태가 화면에 보여지는 것을 확인하기 위해 2초의 지연을 설정했습니다.
-
-사용자의 화면에서는 다음과 같이 노출됩니다.
-
-![](/posts/react-use-optimistic/example-1.gif)*낙관적 업데이트가 적용된 후 다시 초가 상태로 되돌아가는 모습*
-
-`useOptimistic`만 단독으로 사용할 경우 컴포넌트가 리렌더링될 때 마다 초기 상태(state)가 동일하므로, 항상 초기 상태로 되돌아가는 것을 확인할 수 있습니다.
-
-실제 서비스에서 API를 요청 후 변경된 상태를 사용자에게 보여주기 위해서는 `useOptimistic`의 초기 상태를 서버 상태와 동기화하는 로직이 필요합니다.
-
-서버 상태를 관리하기 위해 `useState` 추가하고, 실제 서비스처럼 동작할 수 있도록 API를 호출하는 로직을 추가했습니다.
-
-```tsx
-function LikeButton() {
-	// 1. 서버 상태와 동기화하기 위해 state 선언
 	const [state, setState] = useState<State>({ 
 		isLike: false,
 		count: 0
 	})
-	
+
 	const [error, setError] = useState('')
-	
-	const updateFn = () => ({
-		// 기존 코드와 동일
-	});
-	
-	// useOptimistic 훅은 state가 변경되어 컴포넌트가 리렌더링되지 않으면,
-	// 초기 상태를 계속 유지
-	const [optimisticState, toggleOptimisticIsLike] = useOptimistic<State, Value>(state, updateFn)
-	
-	// 2. pending 상태 관리를 위해 useTransition 훅 호출
+
+	const [optimisticState, toggleOptimisticIsLike] = useOptimistic<State, State['isLike']>(state, (currentState, optimisticValue) => {
+		return {
+			isLike: optimisticValue,
+			count: optimisticValue ? currentState.count + 1 : currentState.count - 1
+		}
+	})
+
 	const [isPending, startTransition] = useTransition()
 
-	// 3. POST API 요청
+	useEffect(() => {
+		const fetchData = async () => {
+      const response = await fetch('/api/like', { method: 'GET' })
+      const data = (await response.json()) as { isLike: boolean; count: number }
+			setState(data)
+    }
+
+    fetchData();
+	}, [])
+
 	const addLike = async () => {
 		try {
 			const response = await fetch('/api/like', { method: 'POST' })
 			if (!response.ok) {
-				throw new Error('오류가 발생했습니다.')
+				throw new Error('Server Error...')
 			}
 			const data = (await response.json()) as { isLike: boolean; count: number }
-			
-			// 3-1 API 요청에 성공했을 경우 서버 상태를 기준으로 컴포넌트를 리렌더링
 			setState(data)
 		} catch (error) {
 			if (error instanceof Error) {
-				// 3-2 API 요청에 실패했을 경우 에러 메시지를 화면에 렌더링
-				// state가 업데이트되지 않기 때문에 optimisticState가 초기 상태로 롤백
 				setError(error.message)
 			}
 		}
 	}
-	
+
 	const removeLike = async () => {
 		const response = await fetch('/api/like', { method: 'DELETE' })
 		const data = (await response.json()) as { isLike: boolean; count: number }
 		setState(data)
 	}
-	
+
 	const handleClick = () => {
 		startTransition(async () => {
 			const nextIsLike = !optimisticState.isLike
-			
-			// 💡 Optimistic Updates
 			toggleOptimisticIsLike(nextIsLike)
-	
-			// 3. 다음 좋아요 상태에 따라서 API 호출
+
 			if (nextIsLike === true) {
 				await addLike()
 			} else {
@@ -322,44 +108,273 @@ function LikeButton() {
 			}
 		})
 	}
-	
+
+	const heartIcon = optimisticState.isLike ? <Heart color="#d04e4e" fill="#d04e4e" size={80} /> : <Heart color="#d04e4e" size={80} />
+
 	return (
-		<button type="button" onClick={handleClick}>
+		<button type="button" className="flex flex-col gap-2 justify-center items-center" onClick={handleClick}>
 			{heartIcon}
-			<span>{optimisticState.count}</span>
-			{/* 비동기 액션이 진행중인 동안 loading 텍스트 표시 */}
-			{isPending && <div className="text-slate-600">loading...</div>}
-			{error && <div className="text-red-600">{error}</div>}
+			<span className="text-4xl text-center text-slate-600 font-semibold">{optimisticState.count}</span>
+			{isPending && <div className="text-2xl text-center text-slate-600">loading...</div>}
+			{error && <div className="text-xl text-center text-red-600">{error}</div>}
 		</button>
 	)
 }
 ```
+</details>
 
-1. `useState`가 반환한 state를 `useOptimistic`의 초기 값으로 전달합니다.
-    - `setState`가 호출되어 컴포넌트가 리렌더링되면, `useOptimistic`이 새로운 `state`와 호출되어 초기 상태가 변경됩니다.
-2. API 응답이 도착하기 전에 낙관적인 상태가 먼저 업데이트되고, 화면에 렌더링되는 것을 확인하기 위해 `useTransition` 훅을 추가했습니다.
-    - `pending` 상태를 관리하기 위해 `useTransition` 훅이 반환하는 `startTransition`을 사용합니다.
-    - `startTransition`의 액션이 호출되는 동안  `isPending` 이 `true`로 유지되고,  “loading...” 텍스트가 화면에 렌더링됩니다.
-3. `toggleOptimisticIsLike` 을 호출하여 낙관적인 상태를 먼저 업데이트한 후, API를 요청합니다.
-    - 3-1) API 요청에 성공할 경우 `setState`가 호출되고, 컴포넌트가 리렌더링됩니다.
-    - 3-2) API 요청에 실패할 경우 `optimisticState`가 초기 상태로 되돌아갑니다.
-4. API 호출에 실패할 경우 오류 메시지를 사용자에게 보여줍니다.
+---
 
-사용자의 화면에서는 다음과 같이 렌더링됩니다.
+### useOptimistic 훅 선언
+```tsx
+// LikeButton.tsx
+function LikeButton() {
+  const [optimisticState, toggleOptimisticIsLike] = useOptimistic<State, Value>(
+  // state
+  {
+    isLike: false,
+    count: 0
+  },
+  // updateFn
+  (currentState: State, optimisticValue: Value): State => {
+    return {
+      isLike: optimisticValue,
+      count: optimisticValue ? currentState.count + 1 : currentState.count - 1
+    }
+  })
+
+  return <button></button>
+}
+```
+`useOptimistic` 훅의 매개변수
+
+- state
+  - 훅의 초기 값을 지정합니다.
+  - 이번 예제에서는 현재 좋아요 상태와 좋아요 개수를 관리하기 위해서 객체를 사용했습니다.
+- updateFn
+  - `optimisticState`(낙관적인 상태)를 계산하여 반환하는 함수입니다.
+  - 첫 번째 매개변수는 현재 상태, 두 번째 매개변수는 `toggleOptimisticIsLike` 함수의 인자로 전달된 값입니다.
+  - `toggleOptimisticIsLike` 함수가 호출되면 새로운 상태를 계산하여 반환합니다.
+
+`useOptimistic` 훅의 리턴 값
+
+- optimisticState
+  - 비동기 작업이 진행 중인 동안에 사용자에게 보여줄 낙관적인 상태입니다.
+  - 비동기 작업이 진행 중일 경우 `updateFn` 함수가 반환한 값과 동일한 값을 가집니다.
+  - 비동기 작업이 진행 중이지 않을 경우 초기 `state`와 동일한 값(state가 객체일 경우 동일한 참조)을 가집니다.
+- toggleOptimisticIsLike
+  - `toggleOptimisticIsLike` 함수를 호출하면 `updateFn`이 호출되어 `optimisticState`가 업데이트됩니다.
+  - 호출 시 전달 받은 인자가 `updateFn`의 두 번째 인자로 전달됩니다.
+
+---
+
+### 좋아요 버튼 클릭 이벤트 핸들러 구현
+```tsx
+const handleClick = () => {
+  startTransition(async () => {
+    // 💡 낙관적 업데이트
+    toggleOptimisticIsLike(!optimisticState.isLike)
+
+    // API 요청을 시뮬레이션하기 위해 2초의 지연 설정
+    await new Promise<void>((resolve) => {
+      setTimeout(resolve, 2000)
+    })
+  })
+}
+```
+- `startTransition` 함수의 콜백 함수 내부에서 `toggleOptimisticIsLike` 함수와 api를 호출합니다.
+- `toggleOptimisticIsLike`가 호출되면 `updateFn`이 실행되고, 네트워크 요청을 보내기 전에 사용자의 화면이 먼저 업데이트 됩니다.
+- 타이머가 종료되어 프로미스가 resolve되면, `optimisticState`는 다시 초기 상태로 되돌아갑니다.
+
+```tsx title="updateFn의 동작 방식"
+// 1. 기존 상태가 { isLike: false, count: 3 } 일 때
+toggleOptimisticIsLike(true)
+
+const newState = updateFn({ isLike: false, count: 3 }, true)
+// => { isLike: true, count: 4 } 반환
+
+// 2. 기존 상태가 { isLike: true, count: 4 } 일 때
+toggleOptimisticIsLike(false)
+
+const newState = updateFn({ isLike: true, count: 4 }, false)
+// => { isLike: false, count: 3 } 반환
+```
+
+-> 사용자의 화면에는 아래 이미지처럼 보여집니다.
+
+![](/posts/react-use-optimistic/example-1.gif)
+
+낙관적 업데이트가 적용된 후 다시 초기 상태로 되돌아가는 것을 확인할 수 있습니다.<br />
+`useOptimistic`이 단독으로 사용될 경우, 컴포넌트가 리렌더링 될 때마다 초기 `state` 값으로 다시 설정되기 때문입니다.
+
+---
+
+#### ✔ `useOptimistic` 훅을 사용할 때 `startTransition`과 함께 사용해야 하는 이유
+
+`startTransition`의 인자로 전달되는 콜백 함수를 액션이라고 부르는데, `useOptimistic`을 이용해서 낙관적인 업데이트를 적용하려면 `startTransition`이나 React form action 안에서 사용해야 합니다.
+
+-> 그렇지 않으면 다음과 같은 에러 메시지가 출력됩니다.
+```text
+An optimistic state update occurred outside a transition or action. 
+To fix, move the update to an action, or wrap with startTransition.
+```
+
+#### ✔ `startTransition`을 사용하는 두 가지 방법
+
+```jsx
+// 1. react 패키지에서 import
+import { startTransition } from 'react'
+```
+
+```jsx
+// 2. useTransition 훅과 함께 사용
+const [isPending, startTransition] = useTransition()
+```
+- 로딩 상태를 추가로 관리해야 할 경우 useTransition 훅을 사용합니다.
+- `startTransition`의 인자로 전달된 액션이 실행 중인 동안 isPending은 true 값을 유지합니다.
+
+---
+
+### 서버 상태를 관리하기 위해 `useState` 선언
+
+`optimisticState`가 다시 초기 값으로 돌아가는 문제를 해결하려면 서버에서 변경된 상태를 `useOptimistic`의 초기 상태와 동기화해야 합니다.<br />
+이를 위해 `useState`를 사용하여 서버 상태를 관리하고, `useOptimistic`의 초기 값으로 설정하는 코드를 추가했습니다.
+
+```tsx
+const [state, setState] = useState<State>({
+  isLike: false,
+  count: 0
+})
+
+const [error, setError] = useState('')
+
+// 로딩 상태 관리를 위해 useTransition 훅 선언
+const [isPending, startTransition] = useTransition()
+
+// useState가 반환한 state를 useOptimistic 훅의
+// 초기 값으로 전달
+const [optimisticState, toggleOptimisticIsLike] = useOptimistic<State, Value>(
+  state,
+  updateFn
+)
+
+// 컴포넌트가 마운트될 때 현재 좋아요 상태와 개수를 조회
+useEffect(() => {
+  const fetchData = async () => {
+    const response = await fetch('/api/like', { method: 'GET' })
+    const data = (await response.json()) as { isLike: boolean; count: number }
+    setState(data)
+  }
+
+  fetchData();
+}, [])
+```
+- `useState`가 반환한 state를 `useOptimistic`의 초기 값으로 전달합니다.
+- `setState`가 호출되어 컴포넌트가 리렌더링 될 때 마다 `useOptimistic`이 새로운 초기 상태와 함께 호출됩니다.
+
+---
+
+### 실제 api 요청 함수 선언
+
+```tsx
+const addLike = async () => {
+  try {
+    const response = await fetch('/api/like', { method: 'POST' })
+    if (!response.ok) {
+      throw new Error('오류가 발생했습니다.')
+    }
+    
+    const data = (await response.json()) as { isLike: boolean; count: number }
+    setState(data)
+  } catch (error) {
+    if (error instanceof Error) {
+      setError(error.message)
+    }
+  }
+}
+
+const removeLike = async () => {
+  try {
+    const response = await fetch('/api/like', { method: 'DELETE' })
+    if (!response.ok) {
+      throw new Error('오류가 발생했습니다.')
+    }
+    
+    const data = (await response.json()) as { isLike: boolean; count: number }
+    setState(data)
+  } catch (error) {
+    if (error instanceof Error) {
+      setError(error.message)
+    }
+  }
+}
+
+const handleClick = () => {
+  startTransition(async () => {
+    const nextIsLike = !optimisticState.isLike
+
+    // 💡 낙관적 업데이트
+    toggleOptimisticIsLike(nextIsLike)
+
+    if (nextIsLike === true) {
+      await addLike()
+    } else {
+      await removeLike()
+    }
+  })
+}
+```
+- `handleClick` 함수 내부의 액션에서 다음 좋아요 상태에 따라서 낙관적 업데이트를 먼저 적용하고, `addLike`와 `removeLike` 함수를 호출합니다.
+- api 호출에 성공했을 경우
+	- api 응답을 `setState`로 인자로 전달하여 호출하고, 컴포넌트가 리렌더링 됩니다.
+  - `useOptimistic`이 새로운 초기 상태(state)와 함께 호출되어 낙관적인 상태가 유지됩니다.
+- api 호출에 실패했을 경우
+  - `setError`가 호출되어 컴포넌트가 리렌더링됩니다.
+  - `state`가 변경되지 않았기 때문에 `optimisticState`가 다시 초기 상태로 되돌아갑니다.
+
+---
+
+### 컴포넌트 UI 구현
+
+```tsx
+const heartIcon = optimisticState.isLike ?
+    <Heart color="#d04e4e" fill="#d04e4e" size={80} /> :
+    <Heart color="#d04e4e" size={80} />
+
+return (
+  <button type="button" onClick={handleClick}>
+    {heartIcon}
+    <span>{optimisticState.count}</span>
+    {isPending && <div className="text-slate-600">loading...</div>}
+    {error && <div className="text-red-600">{error}</div>}
+  </button>
+)
+```
+- `optimisticState`를 화면에 렌더링합니다.
+- `optimisticState.isLike`에 따라서 하트 아이콘이 전환됩니다.
+- api 요청 중인 동안 "loading…"	 텍스트가 화면에 노출됩니다.
+
+---
+
+### API 응답에 따른 UI 변화
 
 ![](/posts/react-use-optimistic/example-2.gif)*API 요청에 성공했을 경우*
 
 ![](/posts/react-use-optimistic/example-3.gif)*API 요청에 실패했을 경우*
 
-### 요약
+---
 
-- `useOptimistic` 훅은 비동기 작업이 진행 중일 때 다른 상태를 보여주는 기능을 제공하고, 이를 이용하여 낙관적 업데이트를 쉽게 구현할 수 있습니다.
-- 비동기 작업이란 React form action 또는, startTransition의 인자로 전달되는 비동기 함수를 의미합니다.
-- 비동기 작업의 호출이 완료되고, `useOptimistic`의 초기 상태가 변경되지 않았을 경우 `useOptimistic` 훅이 반환하는 낙관적인 상태는 다시 이전 값(초기 상태)로 되돌아갑니다.
+## 요약
 
-예제 코드는 [저장소](https://github.com/kyh196201/react-useOptimistic-example)에서 확인할 수 있습니다.
+- 낙관적 업데이트란 비동기 작업이 완료될 때까지 기다리지 않고, 기대되는 결과를 먼저 사용자에게 보여주는 방식입니다.
+- React 19에 추가된 useOptimistic 훅은 낙관적 업데이트를 쉽게 구현할 수 있도록 도와줍니다. 훅 내부에서 이전 상태를 관리하고, api 요청이 실패하면 자동으로 이전 상태로 복원되기 때문에 추가적인 상태 관리 로직을 줄일 수 있습니다.
+- useOptimistic은 React form action 또는 transition과 함께 사용해야 합니다.
 
-**피드백은 언제나 환영입니다!**
+---
+
+전체 코드는 [저장소](https://github.com/kyh196201/react-useOptimistic-example/blob/main/app/LikeButton.tsx)에서 확인할 수 있습니다.
+
+잘못된 내용이 있을 수 있습니다. 피드백은 언제나 환영입니다! 🙂
 
 ---
 
