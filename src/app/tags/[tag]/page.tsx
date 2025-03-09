@@ -8,7 +8,7 @@ type Props = {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { tag } = params
+  const tag = decodeURIComponent(params.tag)
 
   return createMetadata({
     title: tag,
@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props) {
 }
 
 export default function TagPage({ params }: Props) {
-  const { tag } = params
+  const tag = decodeURIComponent(params.tag)
   const posts = postsService.findPostsByTag(tag)
   const title = `#${tag}`
 
