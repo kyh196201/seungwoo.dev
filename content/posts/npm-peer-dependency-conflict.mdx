@@ -1,0 +1,158 @@
+---
+title: "npm peer dependency 충돌 오류 이해하기"
+date: 2025-04-30 23:15:00
+toc: false
+tags:
+  - npm
+  - peerDependencies
+---
+
+현재 내 블로그 레포지토리를 클론하여 `npm install`을 실행하면 아래 에러가 출력되면서 설치가 중단된다.
+
+```shell
+$ npm i
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: mdx-embed@1.1.2
+npm error Found: @mdx-js/mdx@3.0.1
+npm error node_modules/@mdx-js/mdx
+npm error   @mdx-js/mdx@"^3.0.1" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer @mdx-js/mdx@"^1.6.16" from mdx-embed@1.1.2
+npm error node_modules/mdx-embed
+npm error   mdx-embed@"^1.1.2" from the root project
+npm error
+npm error Conflicting peer dependency: @mdx-js/mdx@1.6.22
+npm error node_modules/@mdx-js/mdx
+npm error   peer @mdx-js/mdx@"^1.6.16" from mdx-embed@1.1.2
+npm error   node_modules/mdx-embed
+npm error     mdx-embed@"^1.1.2" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry
+npm error this command with --force or --legacy-peer-deps
+npm error to accept an incorrect (and potentially broken) dependency resolution.
+```
+
+이 에러는 npm 7버전 부터 peer dependency 충돌이 발생할 때 나타나는 오류이다.
+**npm 7 버전부터 패키지의 peer dependency들을 자동으로 설치하는 기능이 추가됐고, peer dependency 충돌이 발생할 경우 오류와 함께 패키지 설치가 중단되도록 변경됐다.**
+이전 버전(4~6)에서는 peer dependency 충돌이 발생해도 경고 문구만 노출되고 오류 없이 설치가 가능했다고 한다.
+
+npm 7버전에서 peerDependencies에 대한 변경 사항은 [이 글](https://github.blog/news-insights/product-news/npm-7-is-now-generally-available/#peer-dependencies)을 통해 확인이 가능하다.
+
+---
+
+## peer dependency란?
+
+패키지가 정상적으로 동작하기 위해 패키지가 설치되는 호스트 프로젝트에 같이 설치 되어야하는 패키지이다. 
+쉽게 말하면, 패키지를 설치하는 사용자에게 호환되는 다른 패키지들과 버전 정보를 알려주는 역할을 한다.<br />
+`package.json` 파일의 `peerDependencies`를 통해 설정이 가능하다.
+
+실제로 `peerDependencies`를 직접 지정해서 사용한적은 없지만 다른 라이브러리의 플러그인이나 React, Vue의 UI 라이브러리를 개발할 때 호환되는 버전을 명시할 때 필요하다고 한다.
+
+---
+
+## 내 블로그에서 peer dependency 충돌이 발생한 이유
+
+현재 프로젝트의 package.json 파일과 `mdx-embed@1.1.2` 패키지의 `peerDependencies` 정보이다.
+
+```json title="블로그/package.json"
+"dependencies": {
+	"@mdx-js/mdx": "^3.0.1",
+	"mdx-embed": "^1.1.2",
+}
+```
+
+```json title="mdx-embed/package.json"
+"peerDependencies": {
+	"@mdx-js/mdx": "^1.6.16",
+	"@mdx-js/react": "^1.6.16",
+	"react": "^16.x || ^17.x || ^18.x",
+	"react-dom": "^16.x || ^17.x || ^18.x"
+}
+```
+
+`npm install`을 실행하여 패키지를 설치할 때 `mdx-embed@^1.1.2`의 peer dependency인 `@mdx-js/mdx@^1.6.16`도 자동으로 설치된다.
+이때, npm은 [캐럿 표기법](https://docs.npmjs.com/cli/v6/using-npm/semver#caret-ranges-123-025-004)에 따라 `^1.6.16` 버전 범위 중 가장 최신 버전(1.6.22)의 설치를 시도한다.
+(`^1.6.16`은 "`1.6.16` 버전 이상 `2.0.0` 버전 미만"을 의미한다.)<br />
+하지만, 프로젝트에는 `dependencies`에 있는 `@mdx-js/mdx@3.0.1` 버전이 설치되어 있고, 이 버전은 `^1.6.16` 버전 범위에 포함되지 않아 충돌이 발생한다.
+**npm은 `^3.0.1`, `^1.6.16` 두 버전 범위를 모두 만족하는 버전을 찾지 못해 충돌을 해결하지 못하고, 오류와 함께 패키지 설치가 중단된다.**
+
+이 내용은 에러 로그를 통해서도 확인이 가능하다.
+
+```shell
+# `mdx-embed@1.1.2`를 설치하려고 했는데
+# 현재 프로젝트에 `@mdx-js/mdx@3.0.1`가 설치되어 있다
+While resolving: mdx-embed@1.1.2
+Found: @mdx-js/mdx@3.0.1
+
+Could not resolve dependency
+# `mdx-embed@1.1.2`의 peer dependency는 `@mdx-js/mdx@^1.6.16`이다
+peer @mdx-js/mdx@"^1.6.16" from mdx-embed@1.1.2
+
+# 충돌이 발생한 peer dependency는 `@mdx-js/mdx` 1.6.22 버전이다
+Conflicting peer dependency: @mdx-js/mdx@1.6.22
+```
+
+---
+
+## peer dependency 충돌을 해결하는 방법
+
+```shell
+Fix the upstream dependency conflict, or retry
+this command with --force or --legacy-peer-deps
+```
+
+npm의 에러 메시지에 나와있는 것처럼 `--force`, `--legacy-peer-deps` 옵션과 함께 `npm install`을 실행하여 패키지를 설치할 수 있다.
+
+두 옵션 모두 peer dependency 충돌이 발생해도 패키지를 설치할 수 있는 기능을 제공하지만 다음과 같은 차이점이 있다.
+
+`--legacy-peer-deps`
+- **npm 7 이전 버전(4~6 버전)이 peer dependency를 처리하는 방식을 사용**하여 패키지를 설치한다.
+- **peer dependency 검사 자체를 비활성화**하기 때문에 호환되지 않는 패키지가 설치되어 있어도 오류 없이 패키지를 설치할 수 있다.
+- **npm 7에 추가된 peer dependency 자동 설치 기능도 비활성화**되기 때문에 peer dependency를 수동으로 설치해야 한다.
+- peer dependency를 자동으로 설치하지 않고, 직접 명시된 패키지만 설치하기 때문에 오래된 프로젝트에 패키지를 설치할 때 안전하게 사용할 수 있다고 한다.
+
+`--force`
+- **peer dependency 충돌이 발생해도 오류를 무시하고 `package.json`에 있는 버전으로 패키지를 강제로 설치한다.**
+- peer dependency가 자동으로 설치된다.
+
+<br />
+
+![](/posts/npm-peer-dependency-conflict/legacy-peer-deps.png)*`npm install --legacy-peer-deps` 실행 결과*
+
+![](/posts/npm-peer-dependency-conflict/force.png)*`npm install --force` 실행 결과*
+
+`--legacy-peer-deps`을 사용했을 경우 아무런 에러 로그도 출력되지 않고, `--force`를 사용할 경우 에러 로그가 `warn`으로 변경되고 충돌이 발생한 peer dependency를 override 했다는 메시지를 확인할 수 있다.
+
+---
+
+## 결론
+
+peer dependency 충돌이 발생할 경우 `--force`, `--legacy-peer-deps` 옵션을 사용해서 패키지를 설치할 수 있다.
+하지만, **호환되는 패키지들과 함께 설치한 것이 아니기 때문에 패키지가 정상적으로 동작하지 않을 수 있고, 예상하지 못한 오류가 발생할 수 있다고 한다.**
+
+---
+
+## 느낀점
+
+처음 블로그를 개발할 때 `next-contentlayer@0.3.4` 패키지를 설치하면서 부터 peer dependency 충돌 오류가 발생했던 것 같다.
+(프로젝트에서 Next 14 버전을 사용하고, `next-contentlayer@0.3.4`의 peer dependency는 Next 12, 13 버전이다.)
+
+당시에는 개발하기에 급급해서 `--force` 옵션을 사용해서 설치를 진행했고, 그 뒤로 다른 패키지를 추가할 때도 계속 `--force` 옵션을 사용해야 설치가 가능했다.
+서로 호환되지 않는 패키지들이 이렇게 많이 설치되어 있는데, 내 블로그는 왜 정상적으로 동작하는지.. 그 덕에 지금에서야 이 내용에 대해서 공부하게된 것 같다.
+
+이번 기회를 통해 peer dependency 충돌 오류와 에러 메시지를 읽는 방법, 충돌이 발생할 때 사용할 수 있는 두 옵션에 대해서 알 수 있었다.
+
+블로그를 개발한지 1년이 넘었는데 패키지의 버전도 업데이트하고 peer dependency 충돌을 개선해 봐야겠다!
+
+---
+
+## 참고
+
+- https://stackoverflow.com/a/68139353
+- https://stackoverflow.com/questions/67185714/how-do-i-read-npm-conflicting-peer-dependency-error-messages
+- https://velog.io/@johnyworld/Peer-Dependencies-에-대하여
+- https://bohyeon-n.github.io/deploy/etc/peerdependencies.html
+- https://kakao.gg/tech/npm/66834a552ec1a0b274e4e6b2
