@@ -1,0 +1,153 @@
+---
+title: "클로드 코드 PostToolUse Hook을 활용한 Prettier 포맷팅 자동화"
+description: 클로드 코드의 PostToolUse Hook과 Node.js 스크립트를 사용해 파일 수정 직후 Prettier 포맷팅을 자동 적용하는 방법을 소개합니다.
+date: 2026-03-31 12:00:00
+toc: true
+tags:
+  - claude code
+  - prettier
+---
+
+요즘 업무를 하면서 클로드 코드(Claude Code)를 통해 대부분의 코드를 작성한다.
+어떤 날은 정말 한 줄의 코드도 직접 치지 않는 날이 있을 정도다.
+
+하지만 클로드 코드가 작성하거나 수정한 파일의 Prettier 포맷팅이 종종 깨지는 문제가 발생한다. 복잡한 로직은 정말 잘 작성해주면서 Prettier 규칙은 왜 잘 지켜주지 않는지 😂
+
+그래서 매번 `npx prettier --write`를 수동으로 실행하거나, 수정된 파일이 한두 개일 때는 하나씩 파일을 열어 `Ctrl + S`를 눌러 포맷팅을 맞춘 후에 커밋을 했다.
+
+매번 이렇게 수동으로 포맷팅을 할 수 없으니 '클로드가 코드를 수정한 직후에 포맷팅을 자동화할 수는 없을까?'라는 생각으로 삽질을 시작했다.
+
+## TL;DR: 별도의 PostToolUse 훅과 Node.js 스크립트를 통한 자동화 성공
+
+결론부터 말하자면, Hook으로부터 수정된 파일에 대한 정보를 넘겨받아 직접 `npx prettier --write`를 실행하는 Node.js 스크립트(`format.js`)를 구현했고, 자동 포맷팅에 성공했다.
+
+**`.claude/hooks/format.js`**
+
+```javascript
+const { execSync } = require('child_process')
+
+let input = ''
+
+// stdin은 stream이라 데이터가 여러 chunk로 나뉘어 올 수 있으므로 누적한다.
+process.stdin.on('data', (chunk) => (input += chunk))
+
+// 클로드 코드가 JSON 전송을 완료하면 처리를 시작한다.
+process.stdin.on('end', () => {
+  try {
+    // stdin으로 수집한 문자열을 파싱한다.
+    const data = JSON.parse(input)
+    // 수정된 파일의 경로를 꺼낸다.
+    const filePath = data.tool_input?.file_path
+
+    // 빈 경로로 실행하면 프로젝트 전체가 포맷팅되므로 반드시 존재 여부를 확인한다.
+    if (filePath) {
+      // JSON.stringify로 경로를 따옴표로 감싼다.
+      // ex: src/my component.vue → "src/my component.vue"
+      // 따옴표 없이 넘기면 셸이 공백을 기준으로 인자를 분리하여
+      // prettier --write src/my component.vue (2개의 파일)로 해석한다.
+      execSync(`npx prettier --write ${JSON.stringify(filePath)}`, {
+        // prettier의 stdout/stderr를 부모 프로세스에 그대로 연결한다.
+        stdio: 'inherit',
+      })
+    }
+  } catch (e) {
+    // prettier 실패가 클로드의 작업 흐름을 중단시킬 이유가 없으므로 정상 종료(0)한다.
+    process.exit(0)
+  }
+})
+```
+
+스크립트의 동작 방식은 간단하다. Hook이 넘겨주는 `session_id`, `transcript_path`, `tool_name`, `tool_input`, `tool_response` 같은 세션 및 도구 실행 정보를 **표준 입력(`stdin`)을 통한 JSON 문자열**로 전달받는다. 이후 이 문자열을 JSON으로 파싱하여, 수정된 파일에 대한 정보가 담겨있는 `tool_input.file_path` 값을 꺼내 Prettier 명령어의 인자로 넘겨주게 된다.
+
+Hook으로부터 전달받는 데이터의 구조는 대략 다음과 같다.
+
+```json
+{
+  "session_id": "...",               // 현재 세션 ID
+  "cwd": "/path/to/project",        // 작업 디렉터리 경로
+  "hook_event_name": "PostToolUse",  // 발동한 Hook 이벤트
+  "tool_name": "Write",             // 실행된 도구 이름
+  "tool_input": {                    // 도구에 전달된 입력 정보
+    "file_path": "src/App.vue",     // ← format.js가 사용하는 값
+    "content": "수정된 파일 내용..."
+  },
+  "tool_response": { ... }          // 도구 실행 결과
+}
+```
+
+**`.claude/settings.json`**
+
+이제 PostToolUse 이벤트가 발생할 때 앞서 만든 스크립트를 실행하도록 설정한다.
+
+`PostToolUse`는 클로드 코드가 특정 도구(Tool)의 사용을 완료한 직후에 동작한다. 코드를 작성하거나 수정한 직후이므로 포맷팅을 적용하기에 안성맞춤이다! 이때 지정된 명령어(`format.js`)를 실행하며, 앞서 살펴본 이벤트 정보를 `stdin`을 통해 JSON 문자열로 전달하게 된다.
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/.claude/hooks/format.js\""
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+- `matcher`: 정규표현식을 사용해 코드를 작성하거나 수정할 때(`Write|Edit|MultiEdit`)만 Hook을 동작시킨다.
+- `command`: `$CLAUDE_PROJECT_DIR` 환경변수를 사용해 스크립트 위치를 안정적으로 참조하여 Node.js로 실행한다.
+
+이제 클로드 코드가 파일을 수정하면, 도구 실행 직후 자동으로 `format.js`가 동작하며 포맷팅 규칙이 완벽하게 적용된다.
+
+## 왜 이 방법이어야 했을까? (삽질기)
+
+### Windows 환경과 jq
+
+처음에는 [클로드 코드 공식 문서](https://code.claude.com/docs/ko/hooks-guide#%ED%8E%B8%EC%A7%91-%ED%9B%84-%EC%BD%94%EB%93%9C-%EC%9E%90%EB%8F%99-%ED%98%95%EC%8B%9D-%EC%A7%80%EC%A0%95)에 나와 있는 코드를 그대로 사용했다.
+
+```json
+{
+  "command": "jq -r '.tool_input.file_path' | xargs npx prettier --write"
+}
+```
+
+잘 동작하나 싶었지만, 혹시나 하는 마음에 `Ctrl + S`를 눌러봤는데, 여전히 포맷팅이 적용되어 있지 않았다.
+처음에는 'CLI에서 실행되는는 Prettier랑 VSCode의 Prettier 설정이 다른가?' 하고 엉뚱한 곳을 의심했다.
+
+하지만 알고보니 Windows(Git Bash) 환경에는 `jq`가 기본으로 설치되어 있지 않아서, 공식 문서의 Hook 명령어가 정상적으로 실행되지 않은 것이 원이이었다. 애초에 포맷팅이 된 적이 없으니 파일을 열고 저장할 때 에디터의 Prettier가 늦게나마 작동한 것이었다 😂
+
+### 존재하지 않는 환경변수 사용
+
+`jq`가 없다는 걸 깨닫고 구글링을 해보니, 많은 블로그 글에서 `$CLAUDE_TOOL_INPUT_FILE_PATH`라는 환경변수를 사용해 파일 경로를 넘기는 방법을 추천하고 있었다. 냅다 적용해 보았다.
+
+```json
+{
+  "command": "npx prettier --write \"$CLAUDE_TOOL_INPUT_FILE_PATH\""
+}
+```
+
+결과는 실패.
+내 환경에서는 해당 환경변수가 존재하지 않아 빈 문자열로 치환되었고, 결과적으로 `npx prettier --write ""`가 실행되어 버렸다. 순식간에 프로젝트 전체 파일(180개 이상)이 포맷팅되어 버렸다.
+
+### 가독성을 포기한 인라인 명령어
+
+"다른 방법으로 해결해 보자!"하고 클로드에게 요청했더니 `settings.json` 내부에 nodejs 스크립트를 작성해 줬다.
+
+```json
+{
+  "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c); ... \""
+}
+```
+
+동작하긴 했는데, 코드가 한 줄로 작성되어 있어서 가독성이 너무 떨어졌다. 나중에 디버깅하거나 로직을 추가할 엄두가 나지 않아 빠르게 포기했다.
+
+## 결론
+
+결국 `.claude/hooks/` 디렉터리에 `format.js`를 명시적으로 분리하는 방법으로 해결했다. 이 방식은 Windows 환경에서도 Node.js만 있다면 문제없이 동작하고, 파일로 관리되니 버전 관리나 팀원들과 공유하기도 훨씬 좋다.
+
+공식 문서의 예제나 검색해서 나온 코드들이 내 작업 환경(Windows)에 언제나 찰떡같이 맞아떨어지지는 않고, 상황에 맞게 적절한 커스터마이징이 필요하다는 걸 다시 한번 생각해볼 수 있었다.
