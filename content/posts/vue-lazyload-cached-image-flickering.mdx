@@ -1,0 +1,124 @@
+---
+title: "Vue-lazyload 적용 후 발생하는 캐싱 이미지 깜빡임 문제 해결기"
+description: vue-lazyload로 캐싱된 이미지가 깜빡이는 문제를 브라우저 캐시 판별 함수로 해결한 과정을 공유합니다.
+date: 2026-03-31 23:00:00
+toc: true
+tags:
+  - vue
+  - vue2
+  - vue-lazyload
+  - lazy loading
+---
+
+유지보수 중인 Vue 2 프로젝트에서 초기 로딩 최적화를 위해 `vue-lazyload` (v1.3.5) 라이브러리를 사용하고 있다. 개선하는 화면의 상품 이미지에 `v-lazy` 디렉티브를 적용했는데, 적용 후 이상한 현상이 생겼다.
+
+최초 로딩에는 문제가 없었는데, **이미 브라우저에 캐싱된 이미지인데도 상품 컴포넌트가 다시 렌더링될 때마다 이미지 영역이 깜빡이는 것**이었다.
+
+## 왜 깜빡였을까?
+
+문제가 발생한 화면은 카테고리 탭을 선택하면 해당 카테고리의 상품 목록을 렌더링하는 구조였다.
+
+사용자가 다른 탭을 보다가 이전에 방문했던 탭으로 다시 돌아오면, 상품 컴포넌트가 재렌더링되면서 컴포넌트의 라이프사이클이 다시 실행된다. 이때 `v-lazy` 디렉티브도 재실행되는 것이 문제의 원인이었다.
+
+`vue-lazyload` 같은 JS 기반 레이지 로딩 라이브러리는 실제 이미지 주소를 `data-src`에 보관해 두었다가, 뷰포트(Viewport)에 노출되는 시점에 `src`로 치환해서 이미지를 로드하는 방식을 사용한다.
+
+브라우저에 이미 캐싱된 이미지인데도, 탭을 이동할 때마다 `v-lazy`가 재실행되면서 아래 과정이 반복되고 있었다.
+
+1. `vue-lazyload`가 `data-src`에 실제 URL을 저장하고, `src` 속성을 **1×1 투명 gif**(라이브러리 기본 placeholder)로 교체한다.
+2. 다행히 이미지 영역에 기본 너비와 높이가 지정되어 있어 레이아웃이 무너지지는 않았다. 하지만 제대로 된 placeholder 이미지가 없었기 때문에, 1×1 투명 gif가 들어간 순간 이미지 영역이 빈 화면처럼 하얗게 비어버린다.
+3. 라이브러리가 뷰포트 노출을 감지하고 다시 `src` 속성에 원래 URL을 주입한다.
+4. 비어있던 영역에 다시 이미지가 나타난다.
+
+사용자 눈에는 이미지가 순간적으로 사라졌다가 나타나는 깜빡임으로 보이게 된 것이다.
+
+## 해결 방법
+
+`vue-lazyload` 라이브러리 자체에 캐시를 판단하는 옵션이 있는지 찾아봤는데, 없었다 😂
+
+그래서 이미지가 브라우저에 캐시됐는지 확인하는 함수를 직접 구현했다! 캐시된 이미지면 `v-lazy`를 쓰지 않고 바로 `src`에 URL을 넣어서 렌더링하는 방식이다.
+
+### 캐시 확인 함수 구현
+
+```javascript
+// 이미지가 브라우저에 캐시되었는지 확인하는 함수
+function isImageCached(url) {
+  if (!url) return false
+
+  const img = new Image()
+  img.src = url
+
+  // 캐시된 이미지: 브라우저 메모리에서 동기적으로 즉시 로드 -> complete === true
+  // 캐시되지 않은 이미지: 비동기 네트워크 요청 시작 -> complete === false
+  // complete는 로드 실패나 빈 src에서도 true를 반환하므로, naturalWidth > 0으로 정상 로드를 검증
+  return img.complete && img.naturalWidth > 0
+}
+```
+
+> **주의:** `new Image()`에 `src`를 할당하면 캐시되지 않은 이미지의 경우 실제 네트워크 요청이 발생한다. 다만 이 함수는 주로 탭에 재방문한 상황에서 호출되므로, 대부분 캐시 히트가 되어 실질적인 영향은 거의 없다.
+
+### Vue 컴포넌트 로직에 적용
+
+작성한 함수를 활용해 컴포넌트 내부에서 레이지 로딩 적용 여부를 결정하는 로직을 추가했다.
+
+```javascript title="Product.vue"
+export default {
+  props: {
+    useLazyload: {
+      type: Boolean,
+      default: true
+    },
+    product: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {
+      // 컴포넌트 생성 시점에 캐시 여부를 한 번만 판단하여 저장
+      isCachedImage: isImageCached(this.product?.imageUrl)
+    }
+  },
+  computed: {
+    shouldUseLazyload() {
+      // 레이지 로딩을 사용하고, 아직 캐시되지 않은 새 이미지일 때만 true 반환
+      return this.useLazyload && !this.isCachedImage
+    }
+  }
+}
+```
+
+### 템플릿 렌더링 분기 처리
+
+기존에 `useLazyload`로 분기하던 조건을 `shouldUseLazyload`로 교체해서, 캐시된 이미지는 `v-lazy`를 거치지 않고 바로 `src`에 바인딩되도록 변경했다.
+
+```html {2}
+<img
+  v-if="shouldUseLazyload"
+  v-lazy="product.imageUrl"
+  :alt="`${product.productName} 이미지`"
+  class="product_image"
+/>
+
+<img
+  v-else
+  :src="product.imageUrl"
+  :alt="`${product.productName} 이미지`"
+  class="product_image"
+/>
+```
+
+## 결론
+
+캐시 판별 로직을 추가한 후에는 탭을 여러 번 이동해도 캐싱된 이미지는 라이브러리를 거치지 않고 바로 그려지면서 깜빡임이 사라졌다.
+
+최적화를 위해 도입한 라이브러리가 오히려 특정 상황에서 문제를 만들 수도 있다는 걸 이번에 다시 느꼈다. `vue-lazyload`가 자체적으로 캐시를 처리해줄 거라고 생각했는데 아니었고, 결국 `new Image()`와 `complete`, `naturalWidth` 같은 브라우저 기본 API로 해결했다.
+
+혹시 비슷한 경험이나 더 좋은 해결 방법이 있다면 댓글로 공유해 주세요 😊
+
+## 참고
+
+- [vue-lazyload - GitHub](https://github.com/hilongjw/vue-lazyload)
+- [HTMLImageElement: complete property - MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/complete)
+- [HTMLImageElement: naturalWidth property - MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/naturalWidth)
+- [The Complete Guide to Lazy Loading Images - CSS-Tricks](https://css-tricks.com/the-complete-guide-to-lazy-loading-images/)
+- [Infographic: A complete guide on lazy loading](https://www.reddit.com/r/webdev/comments/axv3ho/infographic_a_complete_guide_on_lazy_loading/?show=original)
